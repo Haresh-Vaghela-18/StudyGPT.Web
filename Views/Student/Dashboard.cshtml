@@ -1,0 +1,588 @@
+﻿@model StudyGPT.Web.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Student Dashboard";
+}
+
+<div class="student-dashboard-page">
+
+    <!-- =====================================================
+         ERROR
+         ===================================================== -->
+    @if (ViewBag.Error != null)
+    {
+        <div class="dashboard-alert">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <span>
+                @ViewBag.Error
+            </span>
+
+        </div>
+    }
+
+
+    <!-- =====================================================
+         WELCOME
+         ===================================================== -->
+
+    <div class="dashboard-welcome">
+
+        <div class="dashboard-welcome-content">
+
+            <span class="welcome-label">
+                WELCOME BACK 👋
+            </span>
+
+            <h1>
+                Ready to learn something new?
+            </h1>
+
+            <p>
+                Explore your study materials or ask StudyGPT
+                anything about your subjects.
+            </p>
+
+            <div class="welcome-actions">
+
+                <a asp-controller="Student"
+                   asp-action="Subjects"
+                   class="welcome-primary-btn">
+
+                    <i class="bi bi-book-half"></i>
+
+                    Explore Subjects
+
+                </a>
+
+                <a asp-controller="Student"
+                   asp-action="AIAssistant"
+                   class="welcome-secondary-btn">
+
+                    <i class="bi bi-robot"></i>
+
+                    Ask StudyGPT
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="welcome-visual">
+
+            <div class="welcome-glow"></div>
+
+            <div class="welcome-icon">
+
+                <i class="bi bi-mortarboard-fill"></i>
+
+            </div>
+
+            <div class="welcome-floating floating-one">
+                <i class="bi bi-book-fill"></i>
+            </div>
+
+            <div class="welcome-floating floating-two">
+                <i class="bi bi-stars"></i>
+            </div>
+
+            <div class="welcome-floating floating-three">
+                <i class="bi bi-lightbulb-fill"></i>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STATISTICS
+         ===================================================== -->
+
+    <div class="stats-grid">
+
+
+        <!-- STUDY MATERIALS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon purple">
+
+                <i class="bi bi-file-earmark-text-fill"></i>
+
+            </div>
+
+            <div class="stat-content">
+
+                <span>
+                    STUDY MATERIALS
+                </span>
+
+                <strong>
+                    @(Model?.TotalMaterials ?? 0)
+                </strong>
+
+                <small>
+                    Available for study
+                </small>
+
+            </div>
+
+            <div class="stat-arrow">
+                <i class="bi bi-arrow-up-right"></i>
+            </div>
+
+        </div>
+
+
+        <!-- CHAT SESSIONS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon blue">
+
+                <i class="bi bi-chat-dots-fill"></i>
+
+            </div>
+
+            <div class="stat-content">
+
+                <span>
+                    CHAT SESSIONS
+                </span>
+
+                <strong>
+                    @(Model?.TotalChatSessions ?? 0)
+                </strong>
+
+                <small>
+                    Your AI conversations
+                </small>
+
+            </div>
+
+            <div class="stat-arrow">
+                <i class="bi bi-arrow-up-right"></i>
+            </div>
+
+        </div>
+
+
+        <!-- QUESTIONS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon green">
+
+                <i class="bi bi-question-circle-fill"></i>
+
+            </div>
+
+            <div class="stat-content">
+
+                <span>
+                    QUESTIONS ASKED
+                </span>
+
+                <strong>
+                    @(Model?.TotalQuestions ?? 0)
+                </strong>
+
+                <small>
+                    Questions to StudyGPT
+                </small>
+
+            </div>
+
+            <div class="stat-arrow">
+                <i class="bi bi-arrow-up-right"></i>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN GRID
+         ===================================================== -->
+
+    <div class="dashboard-grid">
+
+
+        <!-- =================================================
+             AI CARD
+             ================================================= -->
+
+        <div class="ai-dashboard-card">
+
+            <div class="ai-card-background"></div>
+
+            <div class="ai-content">
+
+                <div class="ai-label">
+
+                    <span class="ai-label-icon">
+                        <i class="bi bi-stars"></i>
+                    </span>
+
+                    STUDYGPT AI
+
+                </div>
+
+
+                <h2>
+                    Learn faster with your
+                    personal AI assistant.
+                </h2>
+
+
+                <p>
+                    Ask questions about your uploaded
+                    study materials and get intelligent
+                    answers based on your course content.
+                </p>
+
+
+                <div class="ai-card-features">
+
+                    <span>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Material-based answers
+                    </span>
+
+                    <span>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Interactive learning
+                    </span>
+
+                </div>
+
+
+                <!-- AI CHAT -->
+
+                <a asp-controller="Student"
+                   asp-action="AIAssistant"
+                   class="dashboard-primary-btn">
+
+                    <i class="bi bi-chat-dots-fill"></i>
+
+                    Start AI Chat
+
+                    <i class="bi bi-arrow-right ms-1"></i>
+
+                </a>
+
+            </div>
+
+
+            <!-- AI VISUAL -->
+
+            <div class="ai-illustration">
+
+                <div class="ai-orbit orbit-one"></div>
+
+                <div class="ai-orbit orbit-two"></div>
+
+                <div class="ai-circle">
+
+                    <i class="bi bi-robot"></i>
+
+                </div>
+
+
+                <div class="floating-icon icon-one">
+
+                    <i class="bi bi-lightbulb-fill"></i>
+
+                </div>
+
+
+                <div class="floating-icon icon-two">
+
+                    <i class="bi bi-stars"></i>
+
+                </div>
+
+
+                <div class="floating-icon icon-three">
+
+                    <i class="bi bi-question-circle-fill"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             QUICK ACTIONS
+             ================================================= -->
+
+        <div class="quick-actions-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="section-label">
+                        QUICK ACCESS
+                    </span>
+
+                    <h3>
+                        What do you want to do?
+                    </h3>
+
+                </div>
+
+                <div class="quick-header-icon">
+
+                    <i class="bi bi-grid-fill"></i>
+
+                </div>
+
+            </div>
+
+
+            <!-- SUBJECTS -->
+
+            <a asp-controller="Student"
+               asp-action="Subjects"
+               class="quick-action">
+
+                <div class="quick-action-icon purple">
+
+                    <i class="bi bi-book-fill"></i>
+
+                </div>
+
+
+                <div class="quick-action-content">
+
+                    <strong>
+                        Browse Subjects
+                    </strong>
+
+                    <span>
+                        Explore your subjects
+                    </span>
+
+                </div>
+
+
+                <div class="quick-action-arrow">
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </div>
+
+            </a>
+
+
+
+            <!-- MATERIALS -->
+
+            <a asp-controller="Student"
+               asp-action="Subjects"
+               class="quick-action">
+
+                <div class="quick-action-icon blue">
+
+                    <i class="bi bi-file-earmark-text-fill"></i>
+
+                </div>
+
+
+                <div class="quick-action-content">
+
+                    <strong>
+                        Study Materials
+                    </strong>
+
+                    <span>
+                        Read your study materials
+                    </span>
+
+                </div>
+
+
+                <div class="quick-action-arrow">
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </div>
+
+            </a>
+
+
+
+            <!-- AI -->
+
+            <a asp-controller="Student"
+               asp-action="AIAssistant"
+               class="quick-action">
+
+                <div class="quick-action-icon green">
+
+                    <i class="bi bi-robot"></i>
+
+                </div>
+
+
+                <div class="quick-action-content">
+
+                    <strong>
+                        Ask StudyGPT
+                    </strong>
+
+                    <span>
+                        Get help from AI
+                    </span>
+
+                </div>
+
+
+                <div class="quick-action-arrow">
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         RECENT MATERIALS
+         ===================================================== -->
+
+    <div class="recent-section">
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-label">
+                    YOUR LEARNING
+                </span>
+
+                <h3>
+                    Recent Study Materials
+                </h3>
+
+            </div>
+
+
+            <a asp-controller="Student"
+               asp-action="Subjects"
+               class="view-all">
+
+                View Subjects
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+
+        @if (Model?.RecentMaterials != null &&
+             Model.RecentMaterials.Any())
+        {
+            <div class="materials-list">
+
+                @foreach (var material in Model.RecentMaterials)
+                {
+                    <div class="material-item">
+
+                        <div class="material-icon">
+
+                            <i class="bi bi-file-earmark-text-fill"></i>
+
+                        </div>
+
+
+                        <div class="material-info">
+
+                            <strong>
+                                @material.Title
+                            </strong>
+
+                            <span>
+                                @material.FileName
+                            </span>
+
+                        </div>
+
+
+                        <div class="material-date">
+
+                            <i class="bi bi-calendar3"></i>
+
+                            @material.UploadedDate.ToString("dd MMM yyyy")
+
+                        </div>
+
+
+                        <div class="material-item-arrow">
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="learning-placeholder">
+
+                <div class="placeholder-icon">
+
+                    <i class="bi bi-journal-bookmark-fill"></i>
+
+                </div>
+
+
+                <div class="placeholder-content">
+
+                    <strong>
+                        Start your learning journey
+                    </strong>
+
+                    <p>
+                        Select a subject to explore your
+                        available study materials.
+                    </p>
+
+                </div>
+
+
+                <a asp-controller="Student"
+                   asp-action="Subjects"
+                   class="outline-btn">
+
+                    Explore Subjects
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </a>
+
+            </div>
+        }
+
+    </div>
+
+</div>

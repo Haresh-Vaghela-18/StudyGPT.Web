@@ -1,0 +1,56 @@
+﻿@model List<StudyGPT.Web.Models.SubjectViewModel>
+
+@{
+    ViewData["Title"] = "Subjects";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">My Subjects</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    <div class="row">
+
+        @foreach (var subject in Model)
+        {
+            <div class="col-md-4 mb-4">
+
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            @subject.SubjectName
+                        </h5>
+
+                        <p class="card-text">
+                            @(subject.Description ?? "No description available.")
+                        </p>
+
+                        <a href="#" class="btn btn-primary">
+                            View Materials
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            No subjects available.
+        </div>
+    }
+
+</div>

@@ -1,0 +1,302 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+    bool isTeacher = User.IsInRole("Teacher");
+    bool isStudent = User.IsInRole("Student");
+
+    string portalName = isTeacher ? "TEACHER PORTAL" : "STUDENT PORTAL";
+    string dashboardController = isTeacher ? "Teacher" : "Student";
+}
+
+<!-- ========================================= -->
+<!-- SIDEBAR -->
+<!-- ========================================= -->
+
+<aside class="teacher-sidebar" id="mainSidebar">
+
+    <!-- ========================================= -->
+    <!-- LOGO -->
+    <!-- ========================================= -->
+
+    <div class="teacher-logo">
+
+        <a asp-controller="@dashboardController"
+           asp-action="Dashboard">
+
+            <div class="teacher-logo-icon">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+
+            <div class="teacher-logo-text">
+
+                <span class="teacher-logo-name">
+                    StudyGPT
+                </span>
+
+                <span class="teacher-logo-role">
+                    @portalName
+                </span>
+
+            </div>
+
+        </a>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- NAVIGATION -->
+    <!-- ========================================= -->
+
+    <nav class="teacher-navigation">
+
+        <div class="teacher-nav-section">
+            MAIN
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- TEACHER MENU -->
+        <!-- ========================================= -->
+        @if (isTeacher)
+        {
+            <!-- DASHBOARD -->
+
+            <a asp-controller="Teacher"
+               asp-action="Dashboard"
+               class="teacher-nav-link @(currentController == "Teacher" && currentAction == "Dashboard" ? "active" : "")">
+
+                <span class="teacher-nav-icon">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- STUDENTS -->
+
+            <a asp-controller="Teacher"
+               asp-action="Students"
+               class="teacher-nav-link @(currentController == "Teacher" && currentAction == "Students" ? "active" : "")">
+
+                <span class="teacher-nav-icon">
+                    <i class="bi bi-people-fill"></i>
+                </span>
+
+                <span>
+                    Students
+                </span>
+
+            </a>
+
+
+            <!-- SUBJECTS -->
+
+            <a asp-controller="Teacher"
+               asp-action="Subjects"
+               class="teacher-nav-link @(currentController == "Teacher" && currentAction == "Subjects" ? "active" : "")">
+
+                <span class="teacher-nav-icon">
+                    <i class="bi bi-book-fill"></i>
+                </span>
+
+                <span>
+                    Subjects
+                </span>
+
+            </a>
+
+
+            <!-- MATERIALS -->
+
+            <a asp-controller="Teacher"
+               asp-action="Materials"
+               class="teacher-nav-link @(currentController == "Teacher" && currentAction == "Materials" ? "active" : "")">
+
+                <span class="teacher-nav-icon">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                </span>
+
+                <span>
+                    Study Materials
+                </span>
+
+            </a>
+
+
+            <!-- UPLOAD -->
+
+            <a asp-controller="Teacher"
+               asp-action="UploadMaterial"
+               class="teacher-nav-link @(currentController == "Teacher" && currentAction == "UploadMaterial" ? "active" : "")">
+
+                <span class="teacher-nav-icon">
+                    <i class="bi bi-cloud-arrow-up-fill"></i>
+                </span>
+
+                <span>
+                    Upload Material
+                </span>
+
+            </a>
+        }
+
+
+        <!-- ========================================= -->
+        <!-- STUDENT MENU -->
+        <!-- ========================================= -->
+        @if (isStudent)
+        {
+            <!-- DASHBOARD -->
+
+            <a asp-controller="Student"
+               asp-action="Dashboard"
+               class="teacher-nav-link @(currentController == "Student" && currentAction == "Dashboard" ? "active" : "")">
+
+                <span class="teacher-nav-icon">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- SUBJECTS -->
+
+            <a asp-controller="Student"
+               asp-action="Subjects"
+               class="teacher-nav-link @(currentController == "Student" && currentAction == "Subjects" ? "active" : "")">
+
+                <span class="teacher-nav-icon">
+                    <i class="bi bi-book-fill"></i>
+                </span>
+
+                <span>
+                    Subjects
+                </span>
+
+            </a>
+
+
+            <!-- AI ASSISTANT -->
+
+            <a asp-controller="Student"
+               asp-action="AIAssistant"
+               class="teacher-nav-link @(currentController == "Student" && currentAction == "AIAssistant" ? "active" : "")">
+
+                <span class="teacher-nav-icon">
+                    <i class="bi bi-robot"></i>
+                </span>
+
+                <span>
+                    AI Assistant
+                </span>
+
+                <span class="ai-new-badge">
+                    AI
+                </span>
+
+            </a>
+        }
+
+
+        <!-- ========================================= -->
+        <!-- ACCOUNT -->
+        <!-- ========================================= -->
+
+        <div class="teacher-nav-section teacher-nav-section-spaced">
+            ACCOUNT
+        </div>
+
+
+        <!-- PROFILE -->
+        @if (isTeacher)
+        {
+            <a asp-controller="Teacher"
+               asp-action="Profile"
+               class="teacher-nav-link @(currentController == "Teacher" && currentAction == "Profile" ? "active" : "")">
+
+                <span class="teacher-nav-icon">
+                    <i class="bi bi-person-circle"></i>
+                </span>
+
+                <span>
+                    My Profile
+                </span>
+
+            </a>
+        }
+        else if (isStudent)
+        {
+            <a asp-controller="Student"
+               asp-action="Profile"
+               class="teacher-nav-link @(currentController == "Student" && currentAction == "Profile" ? "active" : "")">
+
+                <span class="teacher-nav-icon">
+                    <i class="bi bi-person-circle"></i>
+                </span>
+
+                <span>
+                    My Profile
+                </span>
+
+            </a>
+        }
+
+
+        <!-- LOGOUT -->
+
+        <a asp-controller="Auth"
+           asp-action="Logout"
+           class="teacher-nav-link teacher-logout-link">
+
+            <span class="teacher-nav-icon">
+                <i class="bi bi-box-arrow-right"></i>
+            </span>
+
+            <span>
+                Logout
+            </span>
+
+        </a>
+
+    </nav>
+
+
+    <!-- ========================================= -->
+    <!-- SIDEBAR BOTTOM -->
+    <!-- ========================================= -->
+
+    <div class="teacher-sidebar-bottom">
+
+        <div class="teacher-user-card">
+
+            <div class="teacher-user-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div class="teacher-user-info">
+
+                <strong>
+                    @(isTeacher ? "Teacher" : "Student")
+                </strong>
+
+                <small>
+                    StudyGPT
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</aside>

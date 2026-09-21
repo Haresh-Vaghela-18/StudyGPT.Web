@@ -1,0 +1,2634 @@
+﻿@{
+    ViewData["Title"] = "AI Assistant";
+
+    var subjects =
+        ViewBag.Subjects as List<StudyGPT.Web.Models.SubjectViewModel>
+        ?? new List<StudyGPT.Web.Models.SubjectViewModel>();
+
+    int currentSubjectId = 0;
+
+    if (ViewBag.SubjectId != null)
+    {
+        int.TryParse(
+            ViewBag.SubjectId.ToString(),
+            out currentSubjectId
+        );
+    }
+
+    string currentSubjectName =
+        ViewBag.SubjectName?.ToString()
+        ?? "AI Assistant";
+}
+
+<style>
+
+    /* =========================================================
+               AI ASSISTANT PAGE
+               ========================================================= */
+
+    .ai-assistant-page {
+        width: 100%;
+        min-height: calc(100vh - 80px);
+        padding: 20px;
+    }
+
+
+    /* =========================================================
+               CHATGPT STYLE LAYOUT
+               ========================================================= */
+
+    .ai-chat-layout {
+        display: flex;
+        width: 100%;
+        max-width: 1450px;
+        height: calc(100vh - 120px);
+        min-height: 600px;
+        margin: 0 auto;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+    }
+
+
+    /* =========================================================
+               CHAT SIDEBAR
+               ========================================================= */
+
+    .ai-chat-sidebar {
+        width: 280px;
+        min-width: 280px;
+        background: #f8fafc;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    .ai-sidebar-header {
+        padding: 18px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+
+    .ai-sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+
+    .ai-sidebar-brand-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: white;
+        font-size: 18px;
+    }
+
+
+    .ai-sidebar-brand strong {
+        font-size: 16px;
+        color: #111827;
+    }
+
+
+    .ai-sidebar-brand span {
+        display: block;
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 2px;
+    }
+
+
+    /* New Chat Button */
+
+    .new-chat-btn {
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+        padding: 11px 14px;
+        background: #4f46e5;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: 0.2s ease;
+    }
+
+
+        .new-chat-btn:hover {
+            background: #4338ca;
+            transform: translateY(-1px);
+        }
+
+
+    /* Chat History */
+
+    .chat-history-title {
+        padding: 16px 18px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+    }
+
+
+    .chat-history {
+        flex: 1;
+        overflow-y: auto;
+        padding: 5px 10px 15px;
+    }
+
+
+    .chat-history-empty {
+        padding: 20px 10px;
+        text-align: center;
+        color: #9ca3af;
+        font-size: 13px;
+    }
+
+
+    .chat-history-item {
+        width: 100%;
+        border: none;
+        background: transparent;
+        border-radius: 9px;
+        padding: 11px 12px;
+        margin-bottom: 4px;
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.2s ease;
+        color: #374151;
+    }
+
+
+        .chat-history-item:hover {
+            background: #eef2ff;
+        }
+
+
+        .chat-history-item.active {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+
+    .chat-history-icon {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        font-size: 13px;
+    }
+
+
+    .chat-history-text {
+        overflow: hidden;
+        flex: 1;
+    }
+
+
+    .chat-history-title-text {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    .chat-history-subject {
+        display: block;
+        font-size: 10px;
+        color: #9ca3af;
+        margin-top: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    /* =========================================================
+               MAIN CHAT AREA
+               ========================================================= */
+
+    .ai-main-chat {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+    }
+
+
+    /* =========================================================
+               AI HEADER
+               ========================================================= */
+
+    .ai-header {
+        padding: 18px 22px;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+
+    .ai-header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+    }
+
+
+    .ai-header-icon {
+        position: relative;
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        border-radius: 13px;
+        background: rgba(255,255,255,0.16);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+
+
+    .ai-status-dot {
+        position: absolute;
+        width: 9px;
+        height: 9px;
+        background: #22c55e;
+        border: 2px solid white;
+        border-radius: 50%;
+        right: 1px;
+        bottom: 1px;
+    }
+
+
+    .ai-header-info {
+        min-width: 0;
+    }
+
+
+    .section-label {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        opacity: 0.75;
+    }
+
+
+    .ai-header-info h2 {
+        margin: 2px 0;
+        font-size: 19px;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    .ai-header-info p {
+        margin: 0;
+        font-size: 12px;
+        opacity: 0.82;
+    }
+
+
+    .ai-header-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+
+    .ai-online-status,
+    .subject-badge {
+        padding: 7px 11px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.12);
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+
+    .online-dot {
+        width: 7px;
+        height: 7px;
+        background: #22c55e;
+        border-radius: 50%;
+    }
+
+
+    /* =========================================================
+               SUBJECT SELECTOR
+               ========================================================= */
+
+    .ai-subject-selector {
+        padding: 12px 20px;
+        border-bottom: 1px solid #e5e7eb;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+
+    .subject-selector-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+
+    .selector-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 9px;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .subject-selector-label label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 2px;
+    }
+
+
+    .subject-selector-label span {
+        display: block;
+        font-size: 10px;
+        color: #9ca3af;
+    }
+
+
+    .subject-select-wrapper {
+        position: relative;
+        width: 280px;
+    }
+
+
+        .subject-select-wrapper select {
+            width: 100%;
+            height: 40px;
+            border-radius: 9px;
+            border: 1px solid #d1d5db;
+            padding: 0 35px 0 12px;
+            font-size: 13px;
+            outline: none;
+            background: white;
+        }
+
+
+            .subject-select-wrapper select:focus {
+                border-color: #6366f1;
+                box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+            }
+
+
+    .select-arrow {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        pointer-events: none;
+        color: #6b7280;
+    }
+
+
+    /* =========================================================
+               CHAT TOPBAR
+               ========================================================= */
+
+    .chat-topbar {
+        padding: 13px 20px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+
+    .chat-topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+
+    .chat-bot-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .chat-topbar-left strong {
+        display: block;
+        font-size: 13px;
+        color: #111827;
+    }
+
+
+    .chat-topbar-left span {
+        display: block;
+        font-size: 10px;
+        color: #9ca3af;
+    }
+
+
+    .chat-topbar-status {
+        font-size: 11px;
+        color: #16a34a;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+
+    .chat-online-dot {
+        width: 7px;
+        height: 7px;
+        background: #22c55e;
+        border-radius: 50%;
+    }
+
+
+    /* =========================================================
+               CHAT MESSAGES
+               ========================================================= */
+
+    .chat-messages {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 22px;
+        background: #f8fafc;
+    }
+
+
+    .chat-message {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 18px;
+        max-width: 850px;
+    }
+
+
+    .message-avatar {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+    }
+
+
+    .ai-message .message-avatar {
+        background: #4f46e5;
+        color: white;
+    }
+
+
+    .user-message {
+        margin-left: auto;
+        flex-direction: row-reverse;
+    }
+
+
+        .user-message .message-avatar {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+
+    .message-content {
+        max-width: 75%;
+    }
+
+
+    .message-name {
+        font-size: 10px;
+        font-weight: 700;
+        color: #6b7280;
+        margin-bottom: 4px;
+    }
+
+
+    .message-text {
+        padding: 11px 14px;
+        border-radius: 12px;
+        font-size: 13px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+
+    .ai-message .message-text {
+        background: white;
+        border: 1px solid #e5e7eb;
+        color: #374151;
+    }
+
+
+    .user-message .message-text {
+        background: #4f46e5;
+        color: white;
+    }
+
+
+    /* =========================================================
+               WELCOME MESSAGE
+               ========================================================= */
+
+    .welcome-message .message-text {
+        padding: 15px 17px;
+    }
+
+
+    .welcome-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 6px;
+    }
+
+
+    .welcome-subtitle {
+        font-size: 13px;
+        line-height: 1.6;
+        color: #4b5563;
+    }
+
+
+    .welcome-tip {
+        margin-top: 9px;
+        padding-top: 9px;
+        border-top: 1px solid #eef2f7;
+        font-size: 11px;
+        color: #6b7280;
+    }
+
+
+    /* =========================================================
+               INPUT
+               ========================================================= */
+
+    .chat-input-area {
+        padding: 13px 18px;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+    }
+
+
+    .chat-input-wrapper {
+        display: flex;
+        align-items: flex-end;
+        gap: 9px;
+    }
+
+
+    .chat-input {
+        flex: 1;
+        min-height: 43px;
+        max-height: 130px;
+        border: 1px solid #d1d5db;
+        border-radius: 11px;
+        padding: 11px 13px;
+        resize: none;
+        outline: none;
+        font-size: 13px;
+    }
+
+
+        .chat-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.08);
+        }
+
+
+    .send-question-btn {
+        width: 43px;
+        height: 43px;
+        border: none;
+        border-radius: 11px;
+        background: #4f46e5;
+        color: white;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+
+        .send-question-btn:hover:not(:disabled) {
+            background: #4338ca;
+            transform: translateY(-1px);
+        }
+
+
+        .send-question-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+
+    .chat-input-info {
+        margin-top: 7px;
+        display: flex;
+        justify-content: space-between;
+        color: #9ca3af;
+        font-size: 10px;
+    }
+
+
+        .chat-input-info span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+
+    /* =========================================================
+               TYPING
+               ========================================================= */
+
+    .typing-indicator {
+        display: flex;
+        gap: 4px;
+        padding: 5px 2px;
+    }
+
+
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background: #9ca3af;
+            border-radius: 50%;
+        }
+
+
+    /* =========================================================
+               ERROR
+               ========================================================= */
+
+    .chat-error {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+        padding: 10px 13px;
+        border-radius: 9px;
+        margin: 10px 0;
+        display: flex;
+        gap: 7px;
+        font-size: 12px;
+    }
+
+
+    /* =========================================================
+               MOBILE
+               ========================================================= */
+
+    @@media (max-width: 900px) {
+
+        .ai-chat-sidebar {
+            width: 230px;
+            min-width: 230px;
+        }
+
+        .ai-header-right {
+            display: none;
+        }
+
+        .subject-select-wrapper {
+            width: 220px;
+        }
+    }
+
+
+    @@media (max-width: 700px) {
+
+        .ai-assistant-page {
+            padding: 8px;
+        }
+
+        .ai-chat-layout {
+            height: calc(100vh - 90px);
+            min-height: 500px;
+        }
+
+        .ai-chat-sidebar {
+            width: 65px;
+            min-width: 65px;
+        }
+
+        .ai-sidebar-brand div,
+        .chat-history-title,
+        .chat-history-text {
+            display: none;
+        }
+
+        .ai-sidebar-header {
+            padding: 10px;
+        }
+
+        .ai-sidebar-brand {
+            justify-content: center;
+        }
+
+        .new-chat-btn span {
+            display: none;
+        }
+
+        .chat-history-item {
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .chat-history-icon {
+            margin: 0;
+        }
+
+        .ai-subject-selector {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .subject-select-wrapper {
+            width: 100%;
+        }
+
+        .chat-input-info span:last-child {
+            display: none;
+        }
+    }
+
+</style>
+
+
+<div class="ai-assistant-page">
+
+    <div class="ai-chat-layout">
+
+
+        <!-- =====================================================
+             LEFT CHATGPT STYLE SIDEBAR
+             ===================================================== -->
+
+        <aside class="ai-chat-sidebar">
+
+            <div class="ai-sidebar-header">
+
+                <div class="ai-sidebar-brand">
+
+                    <div class="ai-sidebar-brand-icon">
+                        <i class="bi bi-robot"></i>
+                    </div>
+
+                    <div>
+                        <strong>StudyGPT</strong>
+                        <span>AI Learning Assistant</span>
+                    </div>
+
+                </div>
+
+
+                <button type="button"
+                        id="newChatBtn"
+                        class="new-chat-btn">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                    <span>New Chat</span>
+
+                </button>
+
+            </div>
+
+
+            <div class="chat-history-title">
+                Chat History
+            </div>
+
+
+            <div id="chatHistory"
+                 class="chat-history">
+
+                <div class="chat-history-empty"
+                     id="chatHistoryEmpty">
+
+                    <i class="bi bi-chat-left-text"></i>
+
+                    <br />
+
+                    No previous chats
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================================
+             MAIN CHAT
+             ===================================================== -->
+
+        <main class="ai-main-chat">
+
+
+            <!-- =================================================
+                 AI HEADER
+                 ================================================= -->
+
+            <div class="ai-header">
+
+                <div class="ai-header-left">
+
+                    <div class="ai-header-icon">
+
+                        <i class="bi bi-robot"></i>
+
+                        <span class="ai-status-dot"></span>
+
+                    </div>
+
+
+                    <div class="ai-header-info">
+
+                        <span class="section-label">
+                            STUDYGPT AI
+                        </span>
+
+                        <h2 id="currentSubjectName">
+                            @currentSubjectName
+                        </h2>
+
+                        <p>
+                            Ask questions and learn from your study materials.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="ai-header-right">
+
+                    <div class="ai-online-status">
+
+                        <span class="online-dot"></span>
+
+                        AI Ready
+
+                    </div>
+
+
+                    <span class="subject-badge">
+
+                        <i class="bi bi-book"></i>
+
+                        Subject
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SUBJECT SELECTOR
+                 ================================================= -->
+
+            <div class="ai-subject-selector">
+
+                <div class="subject-selector-label">
+
+                    <div class="selector-icon">
+
+                        <i class="bi bi-book-half"></i>
+
+                    </div>
+
+                    <div>
+
+                        <label for="subjectSelect">
+                            Select Subject
+                        </label>
+
+                        <span>
+                            Choose a subject to start your AI session
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="subject-select-wrapper">
+
+                    <select id="subjectSelect"
+                            class="form-select">
+
+                        <option value="0">
+                            -- Select Subject --
+                        </option>
+
+                        @foreach (var subject in subjects)
+                        {
+                            <option value="@subject.SubjectId">
+
+                                @subject.SubjectName
+
+                            </option>
+                        }
+
+                    </select>
+
+                    <i class="bi bi-chevron-down select-arrow"></i>
+
+                </div>
+
+            </div>
+
+
+            <input type="hidden"
+                   id="subjectId"
+                   value="@currentSubjectId" />
+
+
+            <!-- =================================================
+                 CHAT TOPBAR
+                 ================================================= -->
+
+            <div class="chat-topbar">
+
+                <div class="chat-topbar-left">
+
+                    <div class="chat-bot-avatar">
+
+                        <i class="bi bi-robot"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            StudyGPT AI
+                        </strong>
+
+                        <span>
+                            Your personal study assistant
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chat-topbar-status">
+
+                    <span class="chat-online-dot"></span>
+
+                    Online
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CHAT MESSAGES
+                 ================================================= -->
+
+            <div id="chatMessages"
+                 class="chat-messages">
+
+                <div class="chat-message ai-message welcome-message">
+
+                    <div class="message-avatar">
+
+                        <i class="bi bi-robot"></i>
+
+                    </div>
+
+                    <div class="message-content">
+
+                        <div class="message-name">
+                            StudyGPT AI
+                        </div>
+
+                        <div class="message-text">
+
+                            <div class="welcome-title">
+                                Hi! 👋 Happy to see you!
+                            </div>
+
+                            <div class="welcome-subtitle">
+                                Welcome to StudyGPT. I'm your personal
+                                learning assistant and I'm ready to help you
+                                learn.
+                            </div>
+
+                            <div class="welcome-tip">
+                                📚 Select a subject above to get started
+                                with your study materials.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 INPUT
+                 ================================================= -->
+
+            <div class="chat-input-area">
+
+                <div class="chat-input-wrapper">
+
+                    <textarea id="questionInput"
+                              class="chat-input"
+                              rows="1"
+                              placeholder="Ask a question about this subject..."
+                              disabled></textarea>
+
+
+                    <button type="button"
+                            id="sendQuestionBtn"
+                            class="send-question-btn"
+                            disabled>
+
+                        <i class="bi bi-send-fill"></i>
+
+                    </button>
+
+                </div>
+
+
+                <div class="chat-input-info">
+
+                    <span>
+
+                        <i class="bi bi-shield-check"></i>
+
+                        Answers are based on your study materials.
+
+                    </span>
+
+
+                    <span>
+
+                        <i class="bi bi-keyboard"></i>
+
+                        Press Enter to send
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        // =========================================================
+        // VARIABLES
+        // =========================================================
+
+        let chatSessionId = 0;
+
+        let selectedSubjectId = 0;
+
+
+        const subjectSelect =
+            document.getElementById("subjectSelect");
+
+        const subjectIdInput =
+            document.getElementById("subjectId");
+
+        const subjectNameElement =
+            document.getElementById("currentSubjectName");
+
+        const questionInput =
+            document.getElementById("questionInput");
+
+        const sendButton =
+            document.getElementById("sendQuestionBtn");
+
+        const chatMessages =
+            document.getElementById("chatMessages");
+
+        const chatHistory =
+            document.getElementById("chatHistory");
+
+        const chatHistoryEmpty =
+            document.getElementById("chatHistoryEmpty");
+
+        const newChatBtn =
+            document.getElementById("newChatBtn");
+
+
+        const initialSubjectId =
+            parseInt(subjectIdInput.value || "0");
+
+
+        // =========================================================
+        // ESCAPE HTML
+        // =========================================================
+
+        function escapeHtml(text) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent =
+                text ?? "";
+
+            return div.innerHTML;
+
+        }
+
+
+        // =========================================================
+        // SET SUBJECT
+        // =========================================================
+
+        function setSubject(subjectId) {
+
+            selectedSubjectId =
+                parseInt(subjectId || "0");
+
+            subjectIdInput.value =
+                selectedSubjectId;
+
+
+            if (selectedSubjectId > 0) {
+
+                const option =
+                    subjectSelect.querySelector(
+                        'option[value="' +
+                        selectedSubjectId +
+                        '"]'
+                    );
+
+
+                if (option) {
+
+                    subjectNameElement.textContent =
+                        option.textContent.trim();
+
+                }
+
+            }
+            else {
+
+                subjectNameElement.textContent =
+                    "AI Assistant";
+
+            }
+
+        }
+
+
+        // =========================================================
+        // ENABLE CHAT
+        // =========================================================
+
+        function enableChat() {
+
+            questionInput.disabled = false;
+
+            sendButton.disabled = false;
+
+            questionInput.focus();
+
+        }
+
+
+        // =========================================================
+        // DISABLE CHAT
+        // =========================================================
+
+        function disableChat() {
+
+            questionInput.disabled = true;
+
+            sendButton.disabled = true;
+
+        }
+
+
+        // =========================================================
+        // CLEAR CHAT + WELCOME MESSAGE
+        // =========================================================
+
+        function clearChat() {
+
+            chatMessages.innerHTML = "";
+
+
+            const message =
+                document.createElement("div");
+
+            message.className =
+                "chat-message ai-message welcome-message";
+
+
+            let welcomeContent = "";
+
+
+            if (selectedSubjectId > 0) {
+
+                const subjectName =
+                    escapeHtml(
+                        subjectNameElement.textContent
+                    );
+
+
+                welcomeContent =
+
+                    '<div class="welcome-title">' +
+
+                    'Hi! 👋 Happy to see you!' +
+
+                    '</div>' +
+
+                    '<div class="welcome-subtitle">' +
+
+                    'I\'m ready to help you with ' +
+
+                    '<strong>' +
+
+                    subjectName +
+
+                    '</strong>.' +
+
+                    '<br>' +
+
+                    'Ask me anything about your uploaded study materials.' +
+
+                    '</div>' +
+
+                    '<div class="welcome-tip">' +
+
+                    '📚 I will use your study materials to help you learn.' +
+
+                    '</div>';
+
+            }
+            else {
+
+                welcomeContent =
+
+                    '<div class="welcome-title">' +
+
+                    'Hi! 👋 Happy to see you!' +
+
+                    '</div>' +
+
+                    '<div class="welcome-subtitle">' +
+
+                    'Welcome to StudyGPT. I\'m your personal ' +
+
+                    'learning assistant and I\'m ready to help you learn.' +
+
+                    '</div>' +
+
+                    '<div class="welcome-tip">' +
+
+                    '📚 Select a subject above to get started ' +
+
+                    'with your study materials.' +
+
+                    '</div>';
+
+            }
+
+
+            message.innerHTML =
+
+                '<div class="message-avatar">' +
+
+                '<i class="bi bi-robot"></i>' +
+
+                '</div>' +
+
+                '<div class="message-content">' +
+
+                '<div class="message-name">' +
+
+                'StudyGPT AI' +
+
+                '</div>' +
+
+                '<div class="message-text">' +
+
+                welcomeContent +
+
+                '</div>' +
+
+                '</div>';
+
+
+            chatMessages.appendChild(message);
+
+        }
+
+
+        // =========================================================
+        // ADD USER MESSAGE
+        // =========================================================
+
+        function addUserMessage(message) {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "chat-message user-message";
+
+            div.innerHTML =
+
+                '<div class="message-avatar">' +
+
+                '<i class="bi bi-person-fill"></i>' +
+
+                '</div>' +
+
+                '<div class="message-content">' +
+
+                '<div class="message-name">' +
+
+                'You' +
+
+                '</div>' +
+
+                '<div class="message-text">' +
+
+                escapeHtml(message) +
+
+                '</div>' +
+
+                '</div>';
+
+
+            chatMessages.appendChild(div);
+
+            scrollToBottom();
+
+        }
+
+
+        // =========================================================
+        // ADD AI MESSAGE
+        // =========================================================
+
+        function addAIMessage(message) {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "chat-message ai-message";
+
+            div.innerHTML =
+
+                '<div class="message-avatar">' +
+
+                '<i class="bi bi-robot"></i>' +
+
+                '</div>' +
+
+                '<div class="message-content">' +
+
+                '<div class="message-name">' +
+
+                'StudyGPT AI' +
+
+                '</div>' +
+
+                '<div class="message-text">' +
+
+                escapeHtml(message) +
+
+                '</div>' +
+
+                '</div>';
+
+
+            chatMessages.appendChild(div);
+
+            scrollToBottom();
+
+        }
+
+
+        // =========================================================
+        // TYPING
+        // =========================================================
+
+        function showTyping() {
+
+            if (
+                document.getElementById(
+                    "typingIndicator"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            const div =
+                document.createElement("div");
+
+            div.id =
+                "typingIndicator";
+
+            div.className =
+                "chat-message ai-message";
+
+
+            div.innerHTML =
+
+                '<div class="message-avatar">' +
+
+                '<i class="bi bi-robot"></i>' +
+
+                '</div>' +
+
+                '<div class="message-content">' +
+
+                '<div class="message-name">' +
+
+                'StudyGPT AI' +
+
+                '</div>' +
+
+                '<div class="typing-indicator">' +
+
+                '<span></span>' +
+
+                '<span></span>' +
+
+                '<span></span>' +
+
+                '</div>' +
+
+                '</div>';
+
+
+            chatMessages.appendChild(div);
+
+            scrollToBottom();
+
+        }
+
+
+        // =========================================================
+        // HIDE TYPING
+        // =========================================================
+
+        function hideTyping() {
+
+            const typing =
+                document.getElementById(
+                    "typingIndicator"
+                );
+
+
+            if (typing) {
+
+                typing.remove();
+
+            }
+
+        }
+
+
+        // =========================================================
+        // ERROR
+        // =========================================================
+
+        function showError(message) {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "chat-error";
+
+
+            div.innerHTML =
+
+                '<i class="bi bi-exclamation-triangle-fill"></i>' +
+
+                '<span>' +
+
+                escapeHtml(message) +
+
+                '</span>';
+
+
+            chatMessages.appendChild(div);
+
+            scrollToBottom();
+
+        }
+
+
+        // =========================================================
+        // SCROLL
+        // =========================================================
+
+        function scrollToBottom() {
+
+            chatMessages.scrollTop =
+                chatMessages.scrollHeight;
+
+        }
+
+
+        // =========================================================
+        // CREATE NEW CHAT SESSION
+        // =========================================================
+
+        async function createChatSession() {
+
+            if (selectedSubjectId <= 0) {
+
+                disableChat();
+
+                return false;
+
+            }
+
+
+            try {
+
+                disableChat();
+
+
+                const response =
+                    await fetch(
+                        "/Student/NewChat",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    subjectId:
+                                        selectedSubjectId
+                                })
+                        }
+                    );
+
+
+                const responseText =
+                    await response.text();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        responseText ||
+                        "Unable to create chat session."
+                    );
+
+                }
+
+
+                let data;
+
+
+                try {
+
+                    data =
+                        JSON.parse(
+                            responseText
+                        );
+
+                }
+                catch {
+
+                    throw new Error(
+                        "Invalid response received."
+                    );
+
+                }
+
+
+                chatSessionId =
+                    parseInt(
+                        data.chatSessionId ??
+                        data.ChatSessionId ??
+                        data.id ??
+                        data.Id ??
+                        0
+                    );
+
+
+                if (chatSessionId <= 0) {
+
+                    throw new Error(
+                        "API did not return a valid ChatSessionId."
+                    );
+
+                }
+
+
+                enableChat();
+
+                return true;
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Create Chat Error:",
+                    error
+                );
+
+
+                showError(
+                    "Unable to start the AI chat."
+                );
+
+
+                disableChat();
+
+                return false;
+
+            }
+
+        }
+
+
+        // =========================================================
+        // LOAD CHAT SESSIONS
+        // =========================================================
+
+        async function loadChatSessions() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/Student/GetChatSessions"
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load chat sessions."
+                    );
+
+                }
+
+
+                const sessions =
+                    await response.json();
+
+
+                renderChatSessions(
+                    sessions
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Chat Sessions Error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        // =========================================================
+        // RENDER CHAT SESSIONS
+        // =========================================================
+
+        function renderChatSessions(sessions) {
+
+            chatHistory.innerHTML = "";
+
+
+            if (
+                !sessions ||
+                !Array.isArray(sessions) ||
+                sessions.length === 0
+            ) {
+
+                const empty =
+                    document.createElement("div");
+
+                empty.className =
+                    "chat-history-empty";
+
+
+                empty.innerHTML =
+
+                    '<i class="bi bi-chat-left-text"></i>' +
+
+                    '<br>' +
+
+                    'No previous chats';
+
+
+                chatHistory.appendChild(empty);
+
+                return;
+
+            }
+
+
+            sessions.forEach(
+                function(session) {
+
+                    const sessionId =
+                        parseInt(
+                            session.chatSessionId ??
+                            session.ChatSessionId ??
+                            session.id ??
+                            session.Id ??
+                            0
+                        );
+
+
+                    if (sessionId <= 0) {
+
+                        return;
+
+                    }
+
+
+                    const title =
+                        session.title ??
+                        session.Title ??
+                        "New Chat";
+
+
+                    const subjectId =
+                        parseInt(
+                            session.subjectId ??
+                            session.SubjectId ??
+                            0
+                        );
+
+
+                    const subjectName =
+                        session.subjectName ??
+                        session.SubjectName ??
+                        "";
+
+
+                    const button =
+                        document.createElement("button");
+
+
+                    button.type =
+                        "button";
+
+
+                    button.className =
+                        "chat-history-item";
+
+
+                    if (
+                        sessionId ===
+                        chatSessionId
+                    ) {
+
+                        button.classList.add(
+                            "active"
+                        );
+
+                    }
+
+
+                    button.dataset.sessionId =
+                        sessionId;
+
+
+                    button.dataset.subjectId =
+                        subjectId;
+
+
+                    button.innerHTML =
+
+                        '<div class="chat-history-icon">' +
+
+                        '<i class="bi bi-chat-left-text"></i>' +
+
+                        '</div>' +
+
+                        '<div class="chat-history-text">' +
+
+                        '<span class="chat-history-title-text">' +
+
+                        escapeHtml(title) +
+
+                        '</span>' +
+
+                        '<span class="chat-history-subject">' +
+
+                        escapeHtml(subjectName) +
+
+                        '</span>' +
+
+                        '</div>';
+
+
+                    button.addEventListener(
+                        "click",
+                        function() {
+
+                            loadChatHistory(
+                                sessionId,
+                                subjectId
+                            );
+
+                        }
+                    );
+
+
+                    chatHistory.appendChild(
+                        button
+                    );
+
+                }
+            );
+
+        }
+
+
+        // =========================================================
+        // LOAD OLD CHAT HISTORY
+        // =========================================================
+
+        async function loadChatHistory(
+            sessionId,
+            subjectId
+        ) {
+
+            if (sessionId <= 0) {
+
+                return;
+
+            }
+
+
+            try {
+
+                disableChat();
+
+
+                chatSessionId =
+                    sessionId;
+
+
+                // -----------------------------------------
+                // Select correct subject
+                // -----------------------------------------
+
+                if (subjectId > 0) {
+
+                    const option =
+                        subjectSelect.querySelector(
+                            'option[value="' +
+                            subjectId +
+                            '"]'
+                        );
+
+
+                    if (option) {
+
+                        subjectSelect.value =
+                            subjectId.toString();
+
+
+                        setSubject(
+                            subjectId
+                        );
+
+                    }
+
+                }
+
+
+                // -----------------------------------------
+                // Highlight selected chat
+                // -----------------------------------------
+
+                document
+                    .querySelectorAll(
+                        ".chat-history-item"
+                    )
+                    .forEach(
+                        function(item) {
+
+                            item.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                const selectedItem =
+                    document.querySelector(
+                        '.chat-history-item[data-session-id="' +
+                        sessionId +
+                        '"]'
+                    );
+
+
+                if (selectedItem) {
+
+                    selectedItem.classList.add(
+                        "active"
+                    );
+
+                }
+
+
+                // -----------------------------------------
+                // Get history
+                // -----------------------------------------
+
+                const response =
+                    await fetch(
+                        "/Student/GetChatHistory?id=" +
+                        sessionId
+                    );
+
+
+                const responseText =
+                    await response.text();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        responseText ||
+                        "Unable to load chat history."
+                    );
+
+                }
+
+
+                let data;
+
+
+                try {
+
+                    data =
+                        JSON.parse(
+                            responseText
+                        );
+
+                }
+                catch {
+
+                    throw new Error(
+                        "Invalid chat history response."
+                    );
+
+                }
+
+
+                renderChatHistory(
+                    data
+                );
+
+
+                enableChat();
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Load History Error:",
+                    error
+                );
+
+
+                showError(
+                    "Unable to load this chat."
+                );
+
+
+                disableChat();
+
+            }
+
+        }
+
+
+        // =========================================================
+        // RENDER OLD CHAT
+        // =========================================================
+
+        function renderChatHistory(data) {
+
+            chatMessages.innerHTML = "";
+
+
+            let messages = [];
+
+
+            if (Array.isArray(data)) {
+
+                messages = data;
+
+            }
+            else {
+
+                messages =
+                    data.messages ??
+                    data.Messages ??
+                    data.chatMessages ??
+                    data.ChatMessages ??
+                    [];
+
+            }
+
+
+            if (
+                !Array.isArray(messages) ||
+                messages.length === 0
+            ) {
+
+                const emptyMessage =
+                    document.createElement("div");
+
+
+                emptyMessage.className =
+                    "chat-message ai-message welcome-message";
+
+
+                emptyMessage.innerHTML =
+
+                    '<div class="message-avatar">' +
+
+                    '<i class="bi bi-robot"></i>' +
+
+                    '</div>' +
+
+                    '<div class="message-content">' +
+
+                    '<div class="message-name">' +
+
+                    'StudyGPT AI' +
+
+                    '</div>' +
+
+                    '<div class="message-text">' +
+
+                    '<div class="welcome-title">' +
+
+                    'Hi! 👋 Happy to see you!' +
+
+                    '</div>' +
+
+                    '<div class="welcome-subtitle">' +
+
+                    'This chat does not contain any messages yet.' +
+
+                    '</div>' +
+
+                    '<div class="welcome-tip">' +
+
+                    '📚 Ask a question to start learning.' +
+
+                    '</div>' +
+
+                    '</div>' +
+
+                    '</div>';
+
+
+                chatMessages.appendChild(
+                    emptyMessage
+                );
+
+
+                return;
+
+            }
+
+
+            messages.forEach(
+                function(message) {
+
+                    const question =
+                        message.question ??
+                        message.Question ??
+                        "";
+
+
+                    const answer =
+                        message.answer ??
+                        message.Answer ??
+                        "";
+
+
+                    if (question) {
+
+                        addUserMessage(
+                            question
+                        );
+
+                    }
+
+
+                    if (answer) {
+
+                        addAIMessage(
+                            answer
+                        );
+
+                    }
+
+                }
+            );
+
+
+            scrollToBottom();
+
+        }
+
+
+        // =========================================================
+        // SEND QUESTION
+        // =========================================================
+
+        async function sendQuestion() {
+
+            const question =
+                questionInput.value.trim();
+
+
+            if (!question) {
+
+                return;
+
+            }
+
+
+            if (selectedSubjectId <= 0) {
+
+                showError(
+                    "Please select a subject first."
+                );
+
+                return;
+
+            }
+
+
+            if (chatSessionId <= 0) {
+
+                const created =
+                    await createChatSession();
+
+
+                if (!created) {
+
+                    return;
+
+                }
+
+            }
+
+
+            addUserMessage(
+                question
+            );
+
+
+            questionInput.value = "";
+
+            questionInput.style.height =
+                "auto";
+
+
+            showTyping();
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/Student/AskAI",
+                        {
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "X-Chat-Session-Id":
+                                    chatSessionId.toString()
+
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    question:
+                                        question
+                                })
+                        }
+                    );
+
+
+                const responseText =
+                    await response.text();
+
+
+                hideTyping();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        responseText ||
+                        "Unable to get AI response."
+                    );
+
+                }
+
+
+                let data;
+
+
+                try {
+
+                    data =
+                        JSON.parse(
+                            responseText
+                        );
+
+                }
+                catch {
+
+                    data = {
+                        answer:
+                            responseText
+                    };
+
+                }
+
+
+                const answer =
+                    data.answer ??
+                    data.Answer ??
+                    data.message ??
+                    data.Message ??
+                    "I couldn't find an answer.";
+
+
+                addAIMessage(
+                    answer
+                );
+
+
+                await loadChatSessions();
+
+            }
+            catch (error) {
+
+                hideTyping();
+
+
+                console.error(
+                    "Ask AI Error:",
+                    error
+                );
+
+
+                showError(
+                    "Unable to get an answer. Please try again."
+                );
+
+            }
+
+        }
+
+
+        // =========================================================
+        // NEW CHAT BUTTON
+        // =========================================================
+
+        newChatBtn.addEventListener(
+            "click",
+            async function() {
+
+                if (selectedSubjectId <= 0) {
+
+                    showError(
+                        "Please select a subject first."
+                    );
+
+                    return;
+
+                }
+
+
+                chatSessionId = 0;
+
+
+                document
+                    .querySelectorAll(
+                        ".chat-history-item"
+                    )
+                    .forEach(
+                        function(item) {
+
+                            item.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                clearChat();
+
+
+                await createChatSession();
+
+
+                await loadChatSessions();
+
+            }
+        );
+
+
+        // =========================================================
+        // SUBJECT CHANGE
+        // =========================================================
+
+        subjectSelect.addEventListener(
+            "change",
+            async function() {
+
+                const newSubjectId =
+                    parseInt(
+                        this.value || "0"
+                    );
+
+
+                chatSessionId = 0;
+
+
+                setSubject(
+                    newSubjectId
+                );
+
+
+                document
+                    .querySelectorAll(
+                        ".chat-history-item"
+                    )
+                    .forEach(
+                        function(item) {
+
+                            item.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                if (newSubjectId <= 0) {
+
+                    disableChat();
+
+                    clearChat();
+
+                    return;
+
+                }
+
+
+                clearChat();
+
+
+                await createChatSession();
+
+            }
+        );
+
+
+        // =========================================================
+        // ENTER TO SEND
+        // =========================================================
+
+        questionInput.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Enter" &&
+                    !event.shiftKey
+                ) {
+
+                    event.preventDefault();
+
+                    sendQuestion();
+
+                }
+
+            }
+        );
+
+
+        // =========================================================
+        // SEND BUTTON
+        // =========================================================
+
+        sendButton.addEventListener(
+            "click",
+            sendQuestion
+        );
+
+
+        // =========================================================
+        // AUTO RESIZE
+        // =========================================================
+
+        questionInput.addEventListener(
+            "input",
+            function() {
+
+                this.style.height =
+                    "auto";
+
+
+                this.style.height =
+                    this.scrollHeight + "px";
+
+            }
+        );
+
+
+        // =========================================================
+        // PAGE INITIALIZATION
+        // =========================================================
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async function() {
+
+                console.log(
+                    "StudyGPT AI Assistant loaded."
+                );
+
+
+                // -----------------------------------------
+                // Load old chats
+                // -----------------------------------------
+
+                await loadChatSessions();
+
+
+                // -----------------------------------------
+                // Initial subject
+                // -----------------------------------------
+
+                if (initialSubjectId <= 0) {
+
+                    disableChat();
+
+                    clearChat();
+
+                    return;
+
+                }
+
+
+                const option =
+                    subjectSelect.querySelector(
+                        'option[value="' +
+                        initialSubjectId +
+                        '"]'
+                    );
+
+
+                if (!option) {
+
+                    disableChat();
+
+
+                    showError(
+                        "The selected subject is not available."
+                    );
+
+
+                    return;
+
+                }
+
+
+
+
+                subjectSelect.value =
+                    initialSubjectId.toString();
+
+
+                setSubject(
+                    initialSubjectId
+                );
+
+
+                // -----------------------------------------
+                // Show subject-specific greeting
+                // -----------------------------------------
+
+                clearChat();
+
+
+                // -----------------------------------------
+                // Create new session
+                // -----------------------------------------
+
+                await createChatSession();
+
+            }
+        );
+
+    </script>
+
+}

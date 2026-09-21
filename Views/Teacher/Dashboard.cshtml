@@ -1,0 +1,539 @@
+﻿@model StudyGPT.Web.Models.TeacherDashboardViewModel
+
+@{
+    Layout = "_TeacherLayout";
+    ViewData["Title"] = "Teacher Dashboard";
+}
+
+<div class="teacher-dashboard">
+
+    <!-- =========================================================
+         PAGE HEADER
+         ========================================================= -->
+
+    <div class="teacher-welcome">
+
+        <div>
+
+            <span class="teacher-section-label">
+                TEACHER PORTAL
+            </span>
+
+            <h1>
+                Teacher Dashboard
+            </h1>
+
+            <p>
+                Manage your subjects, study materials and students
+                from one place.
+            </p>
+
+        </div>
+
+        <a asp-controller="Teacher"
+           asp-action="UploadMaterial"
+           class="teacher-primary-btn">
+
+            <i class="bi bi-cloud-arrow-up"></i>
+
+            Upload Material
+
+        </a>
+
+    </div>
+
+
+    <!-- =========================================================
+         ERROR MESSAGE
+         ========================================================= -->
+    @if (!string.IsNullOrEmpty(ViewBag.Error))
+    {
+        <div class="teacher-alert teacher-alert-danger">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <span>
+                @ViewBag.Error
+            </span>
+
+        </div>
+    }
+
+
+    <!-- =========================================================
+         STATISTICS
+         ========================================================= -->
+
+    <div class="teacher-stats">
+
+
+        <!-- SUBJECTS -->
+
+        <div class="teacher-stat-card">
+
+            <div class="teacher-stat-icon">
+
+                <i class="bi bi-book"></i>
+
+            </div>
+
+            <div>
+
+                <div class="teacher-stat-label">
+                    Total Subjects
+                </div>
+
+                <div class="teacher-stat-value">
+                    @Model.TotalSubjects
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MATERIALS -->
+
+        <div class="teacher-stat-card">
+
+            <div class="teacher-stat-icon">
+
+                <i class="bi bi-file-earmark-text"></i>
+
+            </div>
+
+            <div>
+
+                <div class="teacher-stat-label">
+                    Study Materials
+                </div>
+
+                <div class="teacher-stat-value">
+                    @Model.TotalMaterials
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- AI -->
+
+        <div class="teacher-stat-card">
+
+            <div class="teacher-stat-icon">
+
+                <i class="bi bi-robot"></i>
+
+            </div>
+
+            <div>
+
+                <div class="teacher-stat-label">
+                    AI Assistant
+                </div>
+
+                <div class="teacher-stat-value">
+                    Active
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         DOCUMENT STATISTICS
+         ========================================================= -->
+
+    <div class="teacher-stats">
+
+
+        <!-- PDF -->
+
+        <div class="teacher-stat-card">
+
+            <div class="teacher-stat-icon">
+
+                <i class="bi bi-file-earmark-pdf"></i>
+
+            </div>
+
+            <div>
+
+                <div class="teacher-stat-label">
+                    PDF Files
+                </div>
+
+                <div class="teacher-stat-value">
+                    @Model.PdfCount
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DOC -->
+
+        <div class="teacher-stat-card">
+
+            <div class="teacher-stat-icon">
+
+                <i class="bi bi-file-earmark-word"></i>
+
+            </div>
+
+            <div>
+
+                <div class="teacher-stat-label">
+                    Word Files
+                </div>
+
+                <div class="teacher-stat-value">
+                    @Model.DocCount
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PPT -->
+
+        <div class="teacher-stat-card">
+
+            <div class="teacher-stat-icon">
+
+                <i class="bi bi-file-earmark-slides"></i>
+
+            </div>
+
+            <div>
+
+                <div class="teacher-stat-label">
+                    PowerPoint Files
+                </div>
+
+                <div class="teacher-stat-value">
+                    @Model.PptCount
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- IMAGES -->
+
+        <div class="teacher-stat-card">
+
+            <div class="teacher-stat-icon">
+
+                <i class="bi bi-file-earmark-image"></i>
+
+            </div>
+
+            <div>
+
+                <div class="teacher-stat-label">
+                    Images
+                </div>
+
+                <div class="teacher-stat-value">
+                    @Model.ImageCount
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         QUICK ACTIONS
+         ========================================================= -->
+
+    <div class="teacher-section-title">
+        Quick Actions
+    </div>
+
+
+    <div class="teacher-action-grid">
+
+
+        <!-- STUDENTS -->
+
+        <a asp-controller="Teacher"
+           asp-action="Students"
+           class="teacher-action-card">
+
+            <div class="teacher-action-icon">
+
+                <i class="bi bi-people-fill"></i>
+
+            </div>
+
+            <h3>
+                Students
+            </h3>
+
+            <p>
+                View and manage students registered in StudyGPT.
+            </p>
+
+            <span class="teacher-action-link">
+
+                View Students
+
+                <i class="bi bi-arrow-right"></i>
+
+            </span>
+
+        </a>
+
+
+        <!-- MATERIALS -->
+
+        <a asp-controller="Teacher"
+           asp-action="Materials"
+           class="teacher-action-card">
+
+            <div class="teacher-action-icon">
+
+                <i class="bi bi-file-earmark-text-fill"></i>
+
+            </div>
+
+            <h3>
+                Study Materials
+            </h3>
+
+            <p>
+                View and manage your uploaded study materials.
+            </p>
+
+            <span class="teacher-action-link">
+
+                View Materials
+
+                <i class="bi bi-arrow-right"></i>
+
+            </span>
+
+        </a>
+
+
+        <!-- UPLOAD -->
+
+        <a asp-controller="Teacher"
+           asp-action="UploadMaterial"
+           class="teacher-action-card">
+
+            <div class="teacher-action-icon">
+
+                <i class="bi bi-cloud-arrow-up-fill"></i>
+
+            </div>
+
+            <h3>
+                Upload Material
+            </h3>
+
+            <p>
+                Add new educational resources for students.
+            </p>
+
+            <span class="teacher-action-link">
+
+                Upload Now
+
+                <i class="bi bi-arrow-right"></i>
+
+            </span>
+
+        </a>
+
+
+        <!-- SUBJECTS -->
+
+        <a asp-controller="Teacher"
+           asp-action="Subjects"
+           class="teacher-action-card">
+
+            <div class="teacher-action-icon">
+
+                <i class="bi bi-book-fill"></i>
+
+            </div>
+
+            <h3>
+                Subjects
+            </h3>
+
+            <p>
+                Create and manage subjects for your materials.
+            </p>
+
+            <span class="teacher-action-link">
+
+                Manage Subjects
+
+                <i class="bi bi-arrow-right"></i>
+
+            </span>
+
+        </a>
+
+    </div>
+
+
+    <!-- =========================================================
+         RECENT UPLOADS
+         ========================================================= -->
+    @if (Model.RecentUploads != null &&
+             Model.RecentUploads.Any())
+    {
+        <div class="teacher-card">
+
+            <div class="teacher-card-header">
+
+                <div>
+
+                    <h3>
+                        Recent Uploads
+                    </h3>
+
+                    <p>
+                        Your latest uploaded study materials.
+                    </p>
+
+                </div>
+
+                <div class="teacher-card-header-icon">
+
+                    <i class="bi bi-clock-history"></i>
+
+                </div>
+
+            </div>
+
+
+            <div class="teacher-table-wrapper">
+
+                <table class="teacher-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Title
+                            </th>
+
+                            <th>
+                                File
+                            </th>
+
+                            <th>
+                                Uploaded
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @{
+                            int index = 1;
+                        }
+
+                        @foreach (var material in Model.RecentUploads)
+                        {
+                            <tr>
+
+                                <td>
+                                    @index
+                                </td>
+
+                                <td>
+
+                                    <strong>
+                                        @material.Title
+                                    </strong>
+
+                                </td>
+
+                                <td>
+
+                                    <span>
+                                        @material.FileName
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    @material.UploadedDate.ToString(
+                                        "dd MMM yyyy HH:mm")
+
+                                </td>
+
+                            </tr>
+
+                            index++;
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    }
+
+
+    <!-- =========================================================
+         INFORMATION
+         ========================================================= -->
+
+    <div class="teacher-info-card">
+
+        <div class="teacher-info-icon">
+
+            <i class="bi bi-mortarboard-fill"></i>
+
+        </div>
+
+
+        <div>
+
+            <span class="teacher-info-label">
+                STUDYGPT TEACHER PORTAL
+            </span>
+
+            <h3>
+                Build better learning resources
+            </h3>
+
+            <p>
+                Upload educational materials, organize them by subject,
+                and make them available to students through the
+                StudyGPT AI learning platform.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>

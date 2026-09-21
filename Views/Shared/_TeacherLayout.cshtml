@@ -1,0 +1,422 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - StudyGPT
+    </title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- MAIN SITE CSS -->
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <!-- TEACHER CSS -->
+    <link rel="stylesheet"
+          href="~/css/teacher.css"
+          asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+
+<body class="teacher-body">
+
+    <div class="teacher-layout">
+
+        <!-- ================================= -->
+        <!-- SIDEBAR -->
+        <!-- ================================= -->
+
+        <aside class="teacher-sidebar">
+
+            <!-- LOGO -->
+
+            <div class="teacher-logo">
+
+                <a asp-controller="Teacher"
+                   asp-action="Dashboard">
+
+                    <div class="teacher-logo-icon">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+
+                    <div class="teacher-logo-text">
+
+                        <span class="teacher-logo-name">
+                            StudyGPT
+                        </span>
+
+                        <span class="teacher-logo-role">
+                            TEACHER PORTAL
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <!-- NAVIGATION -->
+
+            <nav class="teacher-navigation">
+
+                <div class="teacher-nav-section">
+                    MAIN
+                </div>
+
+
+                <!-- DASHBOARD -->
+
+                <a asp-controller="Teacher"
+                   asp-action="Dashboard"
+                   class="teacher-nav-link @(currentAction == "Dashboard" ? "active" : "")">
+
+                    <span class="teacher-nav-icon">
+                        <i class="bi bi-grid-1x2-fill"></i>
+                    </span>
+
+                    <span>
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <!-- STUDENTS -->
+
+                <a asp-controller="Teacher"
+                   asp-action="Students"
+                   class="teacher-nav-link @(currentAction == "Students" ? "active" : "")">
+
+                    <span class="teacher-nav-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </span>
+
+                    <span>
+                        Students
+                    </span>
+
+                </a>
+
+
+                <!-- SUBJECTS -->
+
+                <a asp-controller="Teacher"
+                   asp-action="Subjects"
+                   class="teacher-nav-link @(currentAction == "Subjects" ? "active" : "")">
+
+                    <span class="teacher-nav-icon">
+                        <i class="bi bi-book-fill"></i>
+                    </span>
+
+                    <span>
+                        Subjects
+                    </span>
+
+                </a>
+
+
+                <!-- MATERIALS -->
+
+                <a asp-controller="Teacher"
+                   asp-action="Materials"
+                   class="teacher-nav-link @(currentAction == "Materials" ? "active" : "")">
+
+                    <span class="teacher-nav-icon">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </span>
+
+                    <span>
+                        Study Materials
+                    </span>
+
+                </a>
+
+
+                <!-- UPLOAD -->
+
+                <a asp-controller="Teacher"
+                   asp-action="UploadMaterial"
+                   class="teacher-nav-link @(currentAction == "UploadMaterial" ? "active" : "")">
+
+                    <span class="teacher-nav-icon">
+                        <i class="bi bi-cloud-arrow-up-fill"></i>
+                    </span>
+
+                    <span>
+                        Upload Material
+                    </span>
+
+                </a>
+
+
+                <div class="teacher-nav-section teacher-nav-section-spaced">
+                    ACCOUNT
+                </div>
+
+
+                <!-- PROFILE -->
+
+                <a asp-controller="Teacher"
+                   asp-action="Profile"
+                   class="teacher-nav-link @(currentAction == "Profile" ? "active" : "")">
+
+                    <span class="teacher-nav-icon">
+                        <i class="bi bi-person-circle"></i>
+                    </span>
+
+                    <span>
+                        My Profile
+                    </span>
+
+                </a>
+
+
+                <!-- LOGOUT -->
+
+                <a asp-controller="Auth"
+                   asp-action="Logout"
+                   class="teacher-nav-link teacher-logout-link">
+
+                    <span class="teacher-nav-icon">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </span>
+
+                    <span>
+                        Logout
+                    </span>
+
+                </a>
+
+            </nav>
+
+
+            <!-- SIDEBAR BOTTOM -->
+
+            <div class="teacher-sidebar-bottom">
+
+                <div class="teacher-user-card">
+
+                    <div class="teacher-user-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+
+                    <div class="teacher-user-info">
+
+                        <strong>
+                            Teacher
+                        </strong>
+
+                        <small>
+                            StudyGPT
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- ================================= -->
+        <!-- MAIN -->
+        <!-- ================================= -->
+
+        <div class="teacher-main">
+
+            <!-- TOPBAR -->
+
+            <header class="teacher-topbar">
+
+                <div class="teacher-topbar-left">
+
+                    <button type="button"
+                            class="teacher-mobile-menu"
+                            id="teacherMobileMenu">
+
+                        <i class="bi bi-list"></i>
+
+                    </button>
+
+                    <div>
+
+                        <span class="teacher-top-label">
+                            TEACHER PORTAL
+                        </span>
+
+                        <h5>
+                            @ViewData["Title"]
+                        </h5>
+
+                    </div>
+
+                </div>
+
+
+                <div class="teacher-topbar-right">
+
+                    <div class="teacher-status">
+
+                        <span class="teacher-status-dot"></span>
+
+                        Online
+
+                    </div>
+
+                    <a asp-controller="Teacher"
+                       asp-action="Profile"
+                       class="teacher-profile-button">
+
+                        <i class="bi bi-person-circle"></i>
+
+                        <span>
+                            Teacher
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- ================================= -->
+            <!-- PAGE CONTENT -->
+            <!-- ================================= -->
+
+            <main class="teacher-content">
+
+                @RenderBody()
+
+            </main>
+
+
+            <!-- FOOTER -->
+
+            <footer class="teacher-footer">
+
+                <span>
+                    © @DateTime.Now.Year StudyGPT
+                </span>
+
+                <span>
+                    Teacher Portal
+                </span>
+
+            </footer>
+
+        </div>
+
+    </div>
+
+
+    <!-- MOBILE OVERLAY -->
+
+    <div class="teacher-sidebar-overlay"
+         id="teacherSidebarOverlay">
+    </div>
+
+
+    <!-- JS -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const menuButton =
+                document.getElementById("teacherMobileMenu");
+
+            const sidebar =
+                document.querySelector(".teacher-sidebar");
+
+            const overlay =
+                document.getElementById("teacherSidebarOverlay");
+
+
+            if (menuButton && sidebar && overlay) {
+
+                menuButton.addEventListener("click", function () {
+
+                    sidebar.classList.toggle("mobile-open");
+
+                    overlay.classList.toggle("show");
+
+                });
+
+
+                overlay.addEventListener("click", function () {
+
+                    sidebar.classList.remove("mobile-open");
+
+                    overlay.classList.remove("show");
+
+                });
+
+            }
+
+
+            const sidebarLinks =
+                document.querySelectorAll(".teacher-nav-link");
+
+
+            sidebarLinks.forEach(function (link) {
+
+                link.addEventListener("click", function () {
+
+                    if (window.innerWidth <= 900) {
+
+                        if (sidebar) {
+                            sidebar.classList.remove("mobile-open");
+                        }
+
+                        if (overlay) {
+                            overlay.classList.remove("show");
+                        }
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>

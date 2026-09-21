@@ -1,0 +1,108 @@
+﻿@model StudyGPT.Web.Models.LoginViewModel
+
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Login";
+}
+
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <!-- LOGIN HEADER -->
+
+        <div class="login-header">
+
+            <h1>
+                Welcome Back
+            </h1>
+
+            <p>
+                Login to continue learning
+            </p>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form asp-controller="Auth"
+              asp-action="Login"
+              method="post">
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label asp-for="Email">
+                    Email
+                </label>
+
+                <input asp-for="Email"
+                       class="form-control"
+                       placeholder="Enter your email" />
+
+                <span asp-validation-for="Email"
+                      class="validation-message">
+                </span>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="form-group">
+
+                <label asp-for="Password">
+                    Password
+                </label>
+
+                <input asp-for="Password"
+                       type="password"
+                       class="form-control"
+                       placeholder="Enter your password" />
+
+                <span asp-validation-for="Password"
+                      class="validation-message">
+                </span>
+
+            </div>
+
+
+            <!-- LOGIN BUTTON -->
+
+            <button type="submit"
+                    class="login-button">
+
+                <i class="bi bi-box-arrow-in-right"></i>
+
+                Login
+
+            </button>
+
+        </form>
+
+        <div class="register-footer">
+
+            <span>Don't have an account?</span>
+
+            <a asp-controller="Auth"
+               asp-action="Register">
+
+                Create Account
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

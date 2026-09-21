@@ -1,0 +1,2403 @@
+﻿
+@{
+    ViewData["Title"] = "StudyGPT - AI Powered Learning";
+    Layout = null;
+
+    var isLoggedIn = Context.Session.GetString("JWToken") != null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"]</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+
+            /* =========================================================
+                       STUDYGPT PROFESSIONAL HOME PAGE
+                       ========================================================= */
+
+            :root {
+                --sg-primary: #4f46e5;
+                --sg-primary-dark: #4338ca;
+                --sg-secondary: #7c3aed;
+                --sg-text: #111827;
+                --sg-muted: #64748b;
+                --sg-light: #f8fafc;
+                --sg-border: #e5e7eb;
+                --sg-white: #ffffff;
+                --sg-green: #10b981;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                margin: 0;
+                background: #ffffff;
+                color: var(--sg-text);
+                font-family: "Inter", "Segoe UI", Arial, sans-serif;
+            }
+
+            a {
+                color: inherit;
+            }
+
+            /* =========================================================
+                       STUDYGPT LOGO
+                       ========================================================= */
+
+            .sg-logo {
+                display: flex;
+                align-items: center;
+                gap: 11px;
+                text-decoration: none;
+            }
+
+            .sg-logo-mark {
+                width: 44px;
+                height: 44px;
+                flex-shrink: 0;
+                border-radius: 13px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient( 135deg, #4f46e5, #7c3aed );
+                box-shadow: 0 8px 22px rgba(79, 70, 229, 0.28);
+                position: relative;
+                overflow: hidden;
+            }
+
+                .sg-logo-mark::before {
+                    content: "";
+                    position: absolute;
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.12);
+                    top: -12px;
+                    right: -8px;
+                }
+
+            .sg-logo-svg {
+                width: 27px;
+                height: 27px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .sg-logo-text {
+                font-size: 22px;
+                font-weight: 850;
+                letter-spacing: -0.7px;
+                color: #111827;
+                line-height: 1;
+            }
+
+                .sg-logo-text span {
+                    color: #4f46e5;
+                }
+
+            /* =========================================================
+                       NAVBAR
+                       ========================================================= */
+
+            .sg-navbar {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                width: 100%;
+                background: rgba(255,255,255,0.94);
+                backdrop-filter: blur(14px);
+                border-bottom: 1px solid rgba(229,231,235,0.8);
+            }
+
+            .sg-navbar-inner {
+                max-width: 1250px;
+                margin: auto;
+                padding: 15px 25px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 25px;
+            }
+
+            .sg-nav-links {
+                display: flex;
+                align-items: center;
+                gap: 30px;
+            }
+
+                .sg-nav-links a {
+                    text-decoration: none;
+                    color: #475569;
+                    font-size: 14px;
+                    font-weight: 600;
+                    transition: 0.2s ease;
+                }
+
+                    .sg-nav-links a:hover {
+                        color: var(--sg-primary);
+                    }
+
+            .sg-nav-buttons {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .sg-btn {
+                border: none;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                border-radius: 10px;
+                padding: 11px 18px;
+                font-size: 14px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: 0.25s ease;
+            }
+
+            .sg-btn-outline {
+                color: var(--sg-primary);
+                background: white;
+                border: 1px solid #c7d2fe;
+            }
+
+                .sg-btn-outline:hover {
+                    background: #eef2ff;
+                    transform: translateY(-1px);
+                }
+
+            .sg-btn-primary {
+                color: white;
+                background: linear-gradient( 135deg, var(--sg-primary), var(--sg-secondary) );
+                box-shadow: 0 8px 20px rgba(79,70,229,0.22);
+            }
+
+                .sg-btn-primary:hover {
+                    color: white;
+                    transform: translateY(-2px);
+                    box-shadow: 0 12px 25px rgba(79,70,229,0.30);
+                }
+
+            /* =========================================================
+                       HERO
+                       ========================================================= */
+
+            .sg-hero {
+                position: relative;
+                overflow: hidden;
+                background: radial-gradient( circle at 10% 20%, rgba(99,102,241,0.12), transparent 30% ), radial-gradient( circle at 90% 10%, rgba(124,58,237,0.12), transparent 30% ), #ffffff;
+            }
+
+            .sg-hero-inner {
+                max-width: 1250px;
+                min-height: 650px;
+                margin: auto;
+                padding: 80px 25px;
+                display: grid;
+                grid-template-columns: 1.05fr 0.95fr;
+                align-items: center;
+                gap: 60px;
+            }
+
+            .sg-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 13px;
+                border-radius: 30px;
+                color: var(--sg-primary);
+                background: #eef2ff;
+                border: 1px solid #e0e7ff;
+                font-size: 12px;
+                font-weight: 800;
+                letter-spacing: 0.3px;
+                margin-bottom: 22px;
+            }
+
+            .sg-badge-dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: var(--sg-green);
+                box-shadow: 0 0 0 4px rgba(16,185,129,0.12);
+            }
+
+            .sg-hero-title {
+                margin: 0;
+                max-width: 720px;
+                font-size: clamp(42px,5vw,68px);
+                line-height: 1.05;
+                letter-spacing: -2.5px;
+                font-weight: 850;
+                color: #111827;
+            }
+
+            .sg-gradient-text {
+                background: linear-gradient( 135deg, #4f46e5, #7c3aed, #9333ea );
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+
+            .sg-hero-description {
+                max-width: 620px;
+                margin: 25px 0;
+                color: var(--sg-muted);
+                font-size: 17px;
+                line-height: 1.8;
+            }
+
+            .sg-hero-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-top: 28px;
+            }
+
+                .sg-hero-actions .sg-btn {
+                    padding: 14px 22px;
+                }
+
+            .sg-trust {
+                margin-top: 30px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: #64748b;
+                font-size: 13px;
+            }
+
+                .sg-trust i {
+                    color: var(--sg-green);
+                    font-size: 17px;
+                }
+
+            /* =========================================================
+                       HERO AI CARD
+                       ========================================================= */
+
+            .sg-hero-visual {
+                position: relative;
+                min-height: 490px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .sg-glow {
+                position: absolute;
+                width: 340px;
+                height: 340px;
+                border-radius: 50%;
+                background: linear-gradient( 135deg, rgba(79,70,229,0.16), rgba(124,58,237,0.12) );
+                filter: blur(5px);
+            }
+
+            .sg-ai-card {
+                position: relative;
+                z-index: 2;
+                width: min(100%,480px);
+                background: rgba(255,255,255,0.97);
+                border: 1px solid #e5e7eb;
+                border-radius: 22px;
+                padding: 20px;
+                box-shadow: 0 30px 70px rgba(15,23,42,0.13), 0 8px 25px rgba(79,70,229,0.08);
+            }
+
+            .sg-ai-top {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-bottom: 16px;
+                border-bottom: 1px solid #eef2f7;
+            }
+
+            .sg-ai-profile {
+                display: flex;
+                align-items: center;
+                gap: 11px;
+            }
+
+            .sg-ai-avatar {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                background: linear-gradient( 135deg, var(--sg-primary), var(--sg-secondary) );
+                font-size: 19px;
+            }
+
+            .sg-ai-profile strong {
+                display: block;
+                font-size: 14px;
+            }
+
+            .sg-ai-profile span {
+                display: block;
+                margin-top: 3px;
+                font-size: 11px;
+                color: #94a3b8;
+            }
+
+            .sg-online {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                color: #059669;
+                font-size: 11px;
+                font-weight: 700;
+            }
+
+            .sg-online-dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: #10b981;
+            }
+
+            .sg-chat-area {
+                padding: 22px 4px 8px;
+            }
+
+            .sg-chat-message {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 17px;
+            }
+
+                .sg-chat-message.user {
+                    justify-content: flex-end;
+                }
+
+            .sg-mini-avatar {
+                flex-shrink: 0;
+                width: 30px;
+                height: 30px;
+                border-radius: 9px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+            }
+
+                .sg-mini-avatar.ai {
+                    background: #eef2ff;
+                    color: var(--sg-primary);
+                }
+
+                .sg-mini-avatar.user {
+                    background: #f1f5f9;
+                    color: #475569;
+                }
+
+            .sg-message-bubble {
+                max-width: 82%;
+                padding: 11px 14px;
+                border-radius: 13px;
+                font-size: 12px;
+                line-height: 1.6;
+            }
+
+            .sg-chat-message.ai .sg-message-bubble {
+                color: #334155;
+                background: #f8fafc;
+                border: 1px solid #edf2f7;
+            }
+
+            .sg-chat-message.user .sg-message-bubble {
+                color: white;
+                background: linear-gradient( 135deg, var(--sg-primary), var(--sg-secondary) );
+            }
+
+            .sg-ai-input {
+                margin-top: 8px;
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                padding: 9px;
+                border-radius: 12px;
+                border: 1px solid #e5e7eb;
+                background: white;
+            }
+
+                .sg-ai-input span {
+                    flex: 1;
+                    color: #94a3b8;
+                    font-size: 11px;
+                }
+
+            .sg-ai-send {
+                width: 32px;
+                height: 32px;
+                border-radius: 9px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: var(--sg-primary);
+                color: white;
+                font-size: 12px;
+            }
+
+            /* =========================================================
+                       FLOATING CARDS
+                       ========================================================= */
+
+            .sg-floating-card {
+                position: absolute;
+                z-index: 3;
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 14px;
+                padding: 12px 14px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                box-shadow: 0 14px 35px rgba(15,23,42,0.12);
+            }
+
+                .sg-floating-card.one {
+                    left: -5px;
+                    top: 75px;
+                }
+
+                .sg-floating-card.two {
+                    right: -5px;
+                    bottom: 80px;
+                }
+
+            .sg-floating-icon {
+                width: 34px;
+                height: 34px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 15px;
+            }
+
+                .sg-floating-icon.purple {
+                    background: #ede9fe;
+                    color: #7c3aed;
+                }
+
+                .sg-floating-icon.green {
+                    background: #d1fae5;
+                    color: #059669;
+                }
+
+            .sg-floating-card strong {
+                display: block;
+                font-size: 11px;
+            }
+
+            .sg-floating-card span {
+                display: block;
+                margin-top: 2px;
+                font-size: 10px;
+                color: #94a3b8;
+            }
+
+            /* =========================================================
+                       STATS
+                       ========================================================= */
+
+            .sg-stats {
+                background: #f8fafc;
+                border-top: 1px solid #eef2f7;
+                border-bottom: 1px solid #eef2f7;
+            }
+
+            .sg-stats-inner {
+                max-width: 1050px;
+                margin: auto;
+                padding: 28px 25px;
+                display: grid;
+                grid-template-columns: repeat(4,1fr);
+            }
+
+            .sg-stat {
+                text-align: center;
+                padding: 10px 20px;
+                border-right: 1px solid #e2e8f0;
+            }
+
+                .sg-stat:last-child {
+                    border-right: none;
+                }
+
+                .sg-stat strong {
+                    display: block;
+                    color: var(--sg-text);
+                    font-size: 25px;
+                    font-weight: 800;
+                }
+
+                .sg-stat span {
+                    display: block;
+                    margin-top: 4px;
+                    color: #64748b;
+                    font-size: 12px;
+                }
+
+            /* =========================================================
+                       SECTION COMMON
+                       ========================================================= */
+
+            .sg-section {
+                max-width: 1200px;
+                margin: auto;
+                padding: 90px 25px;
+            }
+
+            .sg-section-heading {
+                text-align: center;
+                max-width: 680px;
+                margin: 0 auto 50px;
+            }
+
+            .sg-section-label {
+                display: inline-block;
+                color: var(--sg-primary);
+                font-size: 12px;
+                font-weight: 800;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                margin-bottom: 10px;
+            }
+
+            .sg-section-heading h2 {
+                margin: 0;
+                font-size: clamp(30px,4vw,42px);
+                letter-spacing: -1px;
+                font-weight: 800;
+            }
+
+            .sg-section-heading p {
+                margin: 15px 0 0;
+                color: var(--sg-muted);
+                line-height: 1.7;
+                font-size: 15px;
+            }
+
+            /* =========================================================
+                       HOW IT WORKS
+                       ========================================================= */
+
+            .sg-how {
+                background: white;
+            }
+
+            .sg-steps {
+                display: grid;
+                grid-template-columns: repeat(3,1fr);
+                gap: 25px;
+            }
+
+            .sg-step {
+                position: relative;
+                text-align: center;
+                padding: 30px 25px;
+                border: 1px solid #e5e7eb;
+                border-radius: 18px;
+                background: white;
+                transition: 0.25s ease;
+            }
+
+                .sg-step:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 18px 40px rgba(15,23,42,0.08);
+                    border-color: #c7d2fe;
+                }
+
+            .sg-step-number {
+                position: absolute;
+                top: 15px;
+                right: 18px;
+                color: #c7d2fe;
+                font-size: 12px;
+                font-weight: 800;
+            }
+
+            .sg-step-icon {
+                width: 62px;
+                height: 62px;
+                margin: 0 auto 20px;
+                border-radius: 17px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 25px;
+            }
+
+                .sg-step-icon.purple {
+                    background: #ede9fe;
+                    color: #7c3aed;
+                }
+
+                .sg-step-icon.blue {
+                    background: #dbeafe;
+                    color: #2563eb;
+                }
+
+                .sg-step-icon.green {
+                    background: #d1fae5;
+                    color: #059669;
+                }
+
+            .sg-step h3 {
+                font-size: 18px;
+                margin: 0 0 10px;
+            }
+
+            .sg-step p {
+                margin: 0;
+                color: var(--sg-muted);
+                font-size: 13px;
+                line-height: 1.7;
+            }
+
+            /* =========================================================
+                       FEATURES
+                       ========================================================= */
+
+            .sg-features-section {
+                background: #f8fafc;
+                max-width: none;
+            }
+
+            .sg-features-inner {
+                max-width: 1200px;
+                margin: auto;
+            }
+
+            .sg-features {
+                display: grid;
+                grid-template-columns: repeat(3,1fr);
+                gap: 18px;
+            }
+
+            .sg-feature {
+                padding: 25px;
+                border-radius: 17px;
+                background: white;
+                border: 1px solid #e5e7eb;
+                transition: 0.25s ease;
+            }
+
+                .sg-feature:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 15px 35px rgba(15,23,42,0.07);
+                }
+
+            .sg-feature-icon {
+                width: 45px;
+                height: 45px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 17px;
+                color: var(--sg-primary);
+                background: #eef2ff;
+                font-size: 19px;
+            }
+
+            .sg-feature h3 {
+                margin: 0 0 8px;
+                font-size: 16px;
+            }
+
+            .sg-feature p {
+                margin: 0;
+                color: var(--sg-muted);
+                font-size: 13px;
+                line-height: 1.7;
+            }
+
+            /* =========================================================
+                       STUDENT / TEACHER
+                       ========================================================= */
+
+            .sg-role-section {
+                background: white;
+            }
+
+            .sg-role-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+
+            .sg-role-card {
+                padding: 35px;
+                border-radius: 20px;
+                border: 1px solid #e5e7eb;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .sg-role-card.student {
+                    background: linear-gradient( 135deg, #eef2ff, #ffffff );
+                }
+
+                .sg-role-card.teacher {
+                    background: linear-gradient( 135deg, #f5f3ff, #ffffff );
+                }
+
+            .sg-role-icon {
+                width: 54px;
+                height: 54px;
+                border-radius: 15px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                background: linear-gradient( 135deg, var(--sg-primary), var(--sg-secondary) );
+                font-size: 23px;
+                margin-bottom: 20px;
+            }
+
+            .sg-role-card h3 {
+                margin: 0 0 10px;
+                font-size: 22px;
+            }
+
+            .sg-role-card p {
+                color: var(--sg-muted);
+                font-size: 14px;
+                line-height: 1.7;
+                margin-bottom: 20px;
+            }
+
+            .sg-role-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+                .sg-role-list li {
+                    display: flex;
+                    align-items: center;
+                    gap: 9px;
+                    margin-bottom: 10px;
+                    font-size: 13px;
+                    color: #475569;
+                }
+
+                .sg-role-list i {
+                    color: var(--sg-green);
+                }
+
+            /* =========================================================
+                       AI PREVIEW
+                       ========================================================= */
+
+            .sg-preview-section {
+                background: #f8fafc;
+            }
+
+            .sg-preview {
+                max-width: 850px;
+                margin: auto;
+                padding: 20px;
+                border-radius: 22px;
+                background: #111827;
+                box-shadow: 0 25px 60px rgba(15,23,42,0.16);
+            }
+
+            .sg-preview-top {
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                padding: 4px 5px 18px;
+            }
+
+            .sg-preview-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #475569;
+            }
+
+            .sg-preview-title {
+                margin-left: auto;
+                margin-right: auto;
+                color: #cbd5e1;
+                font-size: 11px;
+            }
+
+            .sg-preview-content {
+                background: #1e293b;
+                border-radius: 15px;
+                padding: 25px;
+            }
+
+            .sg-preview-question {
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 20px;
+            }
+
+                .sg-preview-question span {
+                    max-width: 65%;
+                    padding: 12px 15px;
+                    border-radius: 13px;
+                    color: white;
+                    background: #4f46e5;
+                    font-size: 13px;
+                }
+
+            .sg-preview-answer {
+                display: flex;
+                gap: 12px;
+            }
+
+            .sg-preview-avatar {
+                width: 35px;
+                height: 35px;
+                flex-shrink: 0;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #312e81;
+                color: #a5b4fc;
+            }
+
+            .sg-preview-answer-box {
+                max-width: 75%;
+                padding: 14px 16px;
+                border-radius: 13px;
+                background: #334155;
+                color: #cbd5e1;
+                font-size: 13px;
+                line-height: 1.7;
+            }
+
+                .sg-preview-answer-box strong {
+                    color: white;
+                }
+
+            /* =========================================================
+                       CTA
+                       ========================================================= */
+
+            .sg-cta {
+                max-width: 1200px;
+                margin: 80px auto;
+                padding: 0 25px;
+            }
+
+            .sg-cta-inner {
+                position: relative;
+                overflow: hidden;
+                text-align: center;
+                padding: 65px 30px;
+                border-radius: 25px;
+                color: white;
+                background: linear-gradient( 135deg, #4f46e5, #6d28d9, #7c3aed );
+                box-shadow: 0 25px 55px rgba(79,70,229,0.22);
+            }
+
+                .sg-cta-inner::before {
+                    content: "";
+                    position: absolute;
+                    width: 260px;
+                    height: 260px;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.08);
+                    top: -130px;
+                    left: -80px;
+                }
+
+                .sg-cta-inner::after {
+                    content: "";
+                    position: absolute;
+                    width: 300px;
+                    height: 300px;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.07);
+                    bottom: -170px;
+                    right: -100px;
+                }
+
+                .sg-cta-inner h2,
+                .sg-cta-inner p,
+                .sg-cta-inner a {
+                    position: relative;
+                    z-index: 2;
+                }
+
+                .sg-cta-inner h2 {
+                    margin: 0;
+                    font-size: clamp(28px,4vw,40px);
+                }
+
+                .sg-cta-inner p {
+                    max-width: 600px;
+                    margin: 15px auto 25px;
+                    opacity: 0.9;
+                    line-height: 1.7;
+                    font-size: 14px;
+                }
+
+            .sg-cta-button {
+                color: #4f46e5;
+                background: white;
+                padding: 13px 22px;
+            }
+
+                .sg-cta-button:hover {
+                    color: #4338ca;
+                    transform: translateY(-2px);
+                }
+
+            /* =========================================================
+                       FOOTER
+                       ========================================================= */
+
+            .sg-footer {
+                background: #0f172a;
+                color: white;
+                padding: 55px 25px 25px;
+            }
+
+            .sg-footer-inner {
+                max-width: 1200px;
+                margin: auto;
+                display: grid;
+                grid-template-columns: 1.5fr 1fr 1fr 1fr;
+                gap: 45px;
+            }
+
+            .sg-footer-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: white;
+                text-decoration: none;
+                margin-bottom: 15px;
+            }
+
+                .sg-footer-brand .sg-logo-mark {
+                    width: 38px;
+                    height: 38px;
+                }
+
+                .sg-footer-brand .sg-logo-svg {
+                    width: 23px;
+                    height: 23px;
+                }
+
+                .sg-footer-brand .sg-logo-text {
+                    color: white;
+                    font-size: 20px;
+                }
+
+                    .sg-footer-brand .sg-logo-text span {
+                        color: #818cf8;
+                    }
+
+            .sg-footer-description {
+                max-width: 320px;
+                color: #94a3b8;
+                font-size: 13px;
+                line-height: 1.8;
+            }
+
+            .sg-footer h4 {
+                margin: 0 0 15px;
+                font-size: 13px;
+            }
+
+            .sg-footer-links {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+                .sg-footer-links li {
+                    margin-bottom: 10px;
+                }
+
+                .sg-footer-links a {
+                    text-decoration: none;
+                    color: #94a3b8;
+                    font-size: 12px;
+                    transition: 0.2s ease;
+                }
+
+                    .sg-footer-links a:hover {
+                        color: white;
+                    }
+
+            .sg-footer-bottom {
+                max-width: 1200px;
+                margin: 40px auto 0;
+                padding-top: 20px;
+                border-top: 1px solid #1e293b;
+                display: flex;
+                justify-content: space-between;
+                gap: 20px;
+                color: #64748b;
+                font-size: 11px;
+            }
+
+            /* =========================================================
+                       RESPONSIVE
+                       ========================================================= */
+
+            @@media (max-width: 992px) {
+
+                .sg-nav-links {
+                    display: none;
+                }
+
+                .sg-hero-inner {
+                    grid-template-columns: 1fr;
+                    text-align: center;
+                    padding-top: 60px;
+                }
+
+                .sg-hero-description {
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                .sg-hero-actions,
+                .sg-trust {
+                    justify-content: center;
+                }
+
+                .sg-hero-visual {
+                    min-height: 450px;
+                }
+
+                .sg-features {
+                    grid-template-columns: repeat(2,1fr);
+                }
+
+                .sg-footer-inner {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+
+            @@media (max-width: 768px) {
+
+                .sg-navbar-inner {
+                    padding: 12px 16px;
+                }
+
+                .sg-logo-text {
+                    font-size: 18px;
+                }
+
+                .sg-nav-buttons .sg-btn-outline {
+                    display: none;
+                }
+
+                .sg-hero-inner {
+                    padding: 50px 18px;
+                }
+
+                .sg-hero-title {
+                    letter-spacing: -1.5px;
+                }
+
+                .sg-hero-description {
+                    font-size: 15px;
+                }
+
+                .sg-floating-card {
+                    display: none;
+                }
+
+                .sg-hero-visual {
+                    min-height: 390px;
+                }
+
+                .sg-stats-inner {
+                    grid-template-columns: repeat(2,1fr);
+                    gap: 10px;
+                }
+
+                .sg-stat:nth-child(2) {
+                    border-right: none;
+                }
+
+                .sg-stat:nth-child(-n+2) {
+                    border-bottom: 1px solid #e2e8f0;
+                    padding-bottom: 18px;
+                }
+
+                .sg-stat:nth-child(n+3) {
+                    padding-top: 18px;
+                }
+
+                .sg-section {
+                    padding: 65px 18px;
+                }
+
+                .sg-steps {
+                    grid-template-columns: 1fr;
+                }
+
+                .sg-features {
+                    grid-template-columns: 1fr;
+                }
+
+                .sg-role-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .sg-preview-question span,
+                .sg-preview-answer-box {
+                    max-width: 90%;
+                }
+
+                .sg-cta {
+                    margin: 55px auto;
+                    padding: 0 18px;
+                }
+
+                .sg-footer-inner {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 30px;
+                }
+
+                .sg-footer-description {
+                    max-width: none;
+                }
+
+                .sg-footer-bottom {
+                    flex-direction: column;
+                }
+            }
+
+            @@media (max-width: 480px) {
+
+                .sg-nav-buttons .sg-btn-primary {
+                    padding: 9px 13px;
+                    font-size: 12px;
+                }
+
+                .sg-logo-mark {
+                    width: 36px;
+                    height: 36px;
+                }
+
+                .sg-logo-svg {
+                    width: 22px;
+                    height: 22px;
+                }
+
+                .sg-logo-text {
+                    font-size: 16px;
+                }
+
+                .sg-hero-visual {
+                    min-height: 350px;
+                }
+
+                .sg-ai-card {
+                    padding: 14px;
+                }
+
+                .sg-ai-input {
+                    display: none;
+                }
+
+                .sg-footer-inner {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================================
+         NAVBAR
+         ========================================================= -->
+
+    <header class="sg-navbar">
+
+        <div class="sg-navbar-inner">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="sg-logo">
+
+                <!-- REAL INLINE STUDYGPT LOGO -->
+                <div class="sg-logo-mark">
+
+                    <svg class="sg-logo-svg"
+                         viewBox="0 0 64 64"
+                         fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+
+                        <!-- Graduation cap -->
+                        <path d="M8 25L32 13L56 25L32 37L8 25Z"
+                              fill="white" />
+
+                        <path d="M17 31V39C17 43
+                        23 48
+                        32 49
+                        41 48
+                        47 43
+                        47 39V31L32 39L17 31Z"
+                              fill="white"
+                              opacity="0.9" />
+
+                        <!-- AI sparkle -->
+                        <path d="M49 10
+                        C50 14 52 16 56 17
+                        C52 18 50 20 49 24
+                        C48 20 46 18 42 17
+                        C46 16 48 14 49 10Z"
+                              fill="#C4B5FD" />
+
+                    </svg>
+
+                </div>
+
+                <div class="sg-logo-text">
+                    Study<span>GPT</span>
+                </div>
+
+            </a>
+
+
+            <nav class="sg-nav-links">
+
+                <a href="#how-it-works">
+                    How It Works
+                </a>
+
+                <a href="#features">
+                    Features
+                </a>
+
+                <a href="#roles">
+                    For Students
+                </a>
+
+                <a href="#ai-preview">
+                    AI Assistant
+                </a>
+
+            </nav>
+
+
+            <div class="sg-nav-buttons">
+
+                @if (isLoggedIn)
+                {
+                    <a asp-controller="Student"
+                       asp-action="Dashboard"
+                       class="sg-btn sg-btn-primary">
+
+                        <i class="bi bi-grid-1x2-fill"></i>
+
+                        Dashboard
+
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Auth"
+                       asp-action="Login"
+                       class="sg-btn sg-btn-outline">
+
+                        Login
+
+                    </a>
+
+                    <a asp-controller="Auth"
+                       asp-action="Register"
+                       class="sg-btn sg-btn-primary">
+
+                        Get Started
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </a>
+                }
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         HERO
+         ========================================================= -->
+
+    <section class="sg-hero">
+
+        <div class="sg-hero-inner">
+
+            <!-- LEFT -->
+
+            <div class="sg-hero-content">
+
+                <div class="sg-badge">
+
+                    <span class="sg-badge-dot"></span>
+
+                    AI-POWERED LEARNING PLATFORM
+
+                </div>
+
+
+                <h1 class="sg-hero-title">
+
+                    Learn Smarter.
+
+                    <br />
+
+                    Ask Better.
+
+                    <br />
+
+                    <span class="sg-gradient-text">
+                        Understand Faster.
+                    </span>
+
+                </h1>
+
+
+                <p class="sg-hero-description">
+
+                    StudyGPT is your intelligent study assistant.
+                    Ask questions about your study materials and
+                    get focused answers powered by AI.
+
+                </p>
+
+
+                <div class="sg-hero-actions">
+
+                    @if (isLoggedIn)
+                    {
+                        <a asp-controller="Student"
+                           asp-action="AIAssistant"
+                           class="sg-btn sg-btn-primary">
+
+                            <i class="bi bi-robot"></i>
+
+                            Open AI Assistant
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth"
+                           asp-action="Register"
+                           class="sg-btn sg-btn-primary">
+
+                            <i class="bi bi-rocket-takeoff-fill"></i>
+
+                            Start Learning
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                        <a asp-controller="Auth"
+                           asp-action="Login"
+                           class="sg-btn sg-btn-outline">
+
+                            <i class="bi bi-box-arrow-in-right"></i>
+
+                            Login
+
+                        </a>
+                    }
+
+                </div>
+
+
+                <div class="sg-trust">
+
+                    <i class="bi bi-shield-check"></i>
+
+                    AI answers are focused on your uploaded study materials.
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT AI VISUAL -->
+
+            <div class="sg-hero-visual">
+
+                <div class="sg-glow"></div>
+
+
+                <!-- Floating card -->
+
+                <div class="sg-floating-card one">
+
+                    <div class="sg-floating-icon purple">
+
+                        <i class="bi bi-file-earmark-text-fill"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Study Materials
+                        </strong>
+
+                        <span>
+                            PDF • DOCX • PPT
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- AI CARD -->
+
+                <div class="sg-ai-card">
+
+                    <div class="sg-ai-top">
+
+                        <div class="sg-ai-profile">
+
+                            <div class="sg-ai-avatar">
+
+                                <i class="bi bi-robot"></i>
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    StudyGPT AI
+                                </strong>
+
+                                <span>
+                                    Personal study assistant
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sg-online">
+
+                            <span class="sg-online-dot"></span>
+
+                            Online
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="sg-chat-area">
+
+                        <!-- User -->
+
+                        <div class="sg-chat-message user">
+
+                            <div class="sg-message-bubble">
+
+                                Explain polymorphism in simple
+                                words.
+
+                            </div>
+
+                            <div class="sg-mini-avatar user">
+
+                                <i class="bi bi-person-fill"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- AI -->
+
+                        <div class="sg-chat-message ai">
+
+                            <div class="sg-mini-avatar ai">
+
+                                <i class="bi bi-robot"></i>
+
+                            </div>
+
+                            <div class="sg-message-bubble">
+
+                                <strong>
+                                    Polymorphism
+                                </strong>
+
+                                means "many forms".
+
+                                <br />
+
+                                It allows the same interface or
+                                method to behave differently
+                                depending on the object using it.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Another User -->
+
+                        <div class="sg-chat-message user">
+
+                            <div class="sg-message-bubble">
+
+                                Give me a simple example.
+
+                            </div>
+
+                            <div class="sg-mini-avatar user">
+
+                                <i class="bi bi-person-fill"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sg-ai-input">
+
+                            <span>
+                                Ask anything about your materials...
+                            </span>
+
+                            <div class="sg-ai-send">
+
+                                <i class="bi bi-send-fill"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Floating card -->
+
+                <div class="sg-floating-card two">
+
+                    <div class="sg-floating-icon green">
+
+                        <i class="bi bi-lightning-charge-fill"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            AI Ready
+                        </strong>
+
+                        <span>
+                            Fast answers
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         STATS
+         ========================================================= -->
+
+    <section class="sg-stats">
+
+        <div class="sg-stats-inner">
+
+            <div class="sg-stat">
+
+                <strong>AI</strong>
+
+                <span>
+                    Powered Learning
+                </span>
+
+            </div>
+
+            <div class="sg-stat">
+
+                <strong>RAG</strong>
+
+                <span>
+                    Material-Based Answers
+                </span>
+
+            </div>
+
+            <div class="sg-stat">
+
+                <strong>24/7</strong>
+
+                <span>
+                    Study Assistance
+                </span>
+
+            </div>
+
+            <div class="sg-stat">
+
+                <strong>100%</strong>
+
+                <span>
+                    Subject Focused
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         HOW IT WORKS
+         ========================================================= -->
+
+    <section id="how-it-works"
+             class="sg-section sg-how">
+
+        <div class="sg-section-heading">
+
+            <span class="sg-section-label">
+                Simple Process
+            </span>
+
+            <h2>
+                How StudyGPT Works
+            </h2>
+
+            <p>
+                Turn your study materials into an intelligent
+                learning experience in just three simple steps.
+            </p>
+
+        </div>
+
+
+        <div class="sg-steps">
+
+            <div class="sg-step">
+
+                <span class="sg-step-number">
+                    01
+                </span>
+
+                <div class="sg-step-icon purple">
+
+                    <i class="bi bi-cloud-arrow-up-fill"></i>
+
+                </div>
+
+                <h3>
+                    Upload Materials
+                </h3>
+
+                <p>
+                    Teachers upload study materials such as
+                    PDFs, documents and presentations.
+                </p>
+
+            </div>
+
+
+            <div class="sg-step">
+
+                <span class="sg-step-number">
+                    02
+                </span>
+
+                <div class="sg-step-icon blue">
+
+                    <i class="bi bi-chat-dots-fill"></i>
+
+                </div>
+
+                <h3>
+                    Ask Questions
+                </h3>
+
+                <p>
+                    Students select a subject and ask questions
+                    using the StudyGPT AI assistant.
+                </p>
+
+            </div>
+
+
+            <div class="sg-step">
+
+                <span class="sg-step-number">
+                    03
+                </span>
+
+                <div class="sg-step-icon green">
+
+                    <i class="bi bi-lightbulb-fill"></i>
+
+                </div>
+
+                <h3>
+                    Understand Better
+                </h3>
+
+                <p>
+                    Get focused answers based on the available
+                    study materials and learn faster.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FEATURES
+         ========================================================= -->
+
+    <section id="features"
+             class="sg-section sg-features-section">
+
+        <div class="sg-features-inner">
+
+            <div class="sg-section-heading">
+
+                <span class="sg-section-label">
+                    Powerful Features
+                </span>
+
+                <h2>
+                    Everything You Need to Study Smarter
+                </h2>
+
+                <p>
+                    StudyGPT combines AI with your educational
+                    content to create a focused learning environment.
+                </p>
+
+            </div>
+
+
+            <div class="sg-features">
+
+                <div class="sg-feature">
+
+                    <div class="sg-feature-icon">
+
+                        <i class="bi bi-robot"></i>
+
+                    </div>
+
+                    <h3>
+                        AI Study Assistant
+                    </h3>
+
+                    <p>
+                        Ask questions naturally and receive
+                        intelligent answers from the AI assistant.
+                    </p>
+
+                </div>
+
+
+                <div class="sg-feature">
+
+                    <div class="sg-feature-icon">
+
+                        <i class="bi bi-file-earmark-text-fill"></i>
+
+                    </div>
+
+                    <h3>
+                        Material Based Learning
+                    </h3>
+
+                    <p>
+                        Answers are generated using your
+                        uploaded educational materials.
+                    </p>
+
+                </div>
+
+
+                <div class="sg-feature">
+
+                    <div class="sg-feature-icon">
+
+                        <i class="bi bi-book-half"></i>
+
+                    </div>
+
+                    <h3>
+                        Subject Focused
+                    </h3>
+
+                    <p>
+                        Keep your learning organized by selecting
+                        the subject you want to study.
+                    </p>
+
+                </div>
+
+
+                <div class="sg-feature">
+
+                    <div class="sg-feature-icon">
+
+                        <i class="bi bi-clock-history"></i>
+
+                    </div>
+
+                    <h3>
+                        Chat History
+                    </h3>
+
+                    <p>
+                        Keep previous AI conversations available
+                        so you can return to your learning later.
+                    </p>
+
+                </div>
+
+
+                <div class="sg-feature">
+
+                    <div class="sg-feature-icon">
+
+                        <i class="bi bi-shield-lock-fill"></i>
+
+                    </div>
+
+                    <h3>
+                        Secure Authentication
+                    </h3>
+
+                    <p>
+                        Student and teacher access is protected
+                        with secure authentication and authorization.
+                    </p>
+
+                </div>
+
+
+                <div class="sg-feature">
+
+                    <div class="sg-feature-icon">
+
+                        <i class="bi bi-speedometer2"></i>
+
+                    </div>
+
+                    <h3>
+                        Fast Learning
+                    </h3>
+
+                    <p>
+                        Quickly find useful information and spend
+                        more time understanding concepts.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         STUDENT / TEACHER
+         ========================================================= -->
+
+    <section id="roles"
+             class="sg-section sg-role-section">
+
+        <div class="sg-section-heading">
+
+            <span class="sg-section-label">
+                Built for Education
+            </span>
+
+            <h2>
+                Designed for Students and Teachers
+            </h2>
+
+            <p>
+                StudyGPT gives every user the tools they need
+                for a better learning experience.
+            </p>
+
+        </div>
+
+
+        <div class="sg-role-grid">
+
+            <!-- STUDENT -->
+
+            <div class="sg-role-card student">
+
+                <div class="sg-role-icon">
+
+                    <i class="bi bi-mortarboard-fill"></i>
+
+                </div>
+
+                <h3>
+                    For Students
+                </h3>
+
+                <p>
+                    Learn from your course materials with an
+                    intelligent AI study companion.
+                </p>
+
+
+                <ul class="sg-role-list">
+
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Ask questions about subjects
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Get AI-powered explanations
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Continue previous conversations
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Study anytime
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <!-- TEACHER -->
+
+            <div class="sg-role-card teacher">
+
+                <div class="sg-role-icon">
+
+                    <i class="bi bi-person-workspace"></i>
+
+                </div>
+
+                <h3>
+                    For Teachers
+                </h3>
+
+                <p>
+                    Provide students with structured learning
+                    materials and an AI-powered study experience.
+                </p>
+
+
+                <ul class="sg-role-list">
+
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Upload study materials
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Organize content by subject
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Manage educational resources
+                    </li>
+
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Support AI-based learning
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         AI PREVIEW
+         ========================================================= -->
+
+    <section id="ai-preview"
+             class="sg-section sg-preview-section">
+
+        <div class="sg-section-heading">
+
+            <span class="sg-section-label">
+                Meet Your AI Assistant
+            </span>
+
+            <h2>
+                Ask. Learn. Understand.
+            </h2>
+
+            <p>
+                StudyGPT turns your study materials into
+                an interactive AI learning experience.
+            </p>
+
+        </div>
+
+
+        <div class="sg-preview">
+
+            <div class="sg-preview-top">
+
+                <span class="sg-preview-dot"></span>
+                <span class="sg-preview-dot"></span>
+                <span class="sg-preview-dot"></span>
+
+                <span class="sg-preview-title">
+                    StudyGPT AI Assistant
+                </span>
+
+            </div>
+
+
+            <div class="sg-preview-content">
+
+                <div class="sg-preview-question">
+
+                    <span>
+                        What is inheritance in C#?
+                    </span>
+
+                </div>
+
+
+                <div class="sg-preview-answer">
+
+                    <div class="sg-preview-avatar">
+
+                        <i class="bi bi-robot"></i>
+
+                    </div>
+
+                    <div class="sg-preview-answer-box">
+
+                        <strong>
+                            Inheritance in C#
+                        </strong>
+
+                        allows a class to acquire properties
+                        and methods from another class.
+
+                        <br /><br />
+
+                        For example, a
+                        <strong>Student</strong>
+                        class can inherit common functionality
+                        from a
+                        <strong>Person</strong>
+                        class.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         CTA
+         ========================================================= -->
+
+    <section class="sg-cta">
+
+        <div class="sg-cta-inner">
+
+            <h2>
+                Ready to Study Smarter?
+            </h2>
+
+            <p>
+                Start using StudyGPT and turn your study
+                materials into a personalized AI learning experience.
+            </p>
+
+
+            @if (isLoggedIn)
+            {
+                <a asp-controller="Student"
+                   asp-action="AIAssistant"
+                   class="sg-btn sg-cta-button">
+
+                    <i class="bi bi-robot"></i>
+
+                    Open AI Assistant
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Auth"
+                   asp-action="Register"
+                   class="sg-btn sg-cta-button">
+
+                    Get Started
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </a>
+            }
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FOOTER
+         ========================================================= -->
+
+    <footer class="sg-footer">
+
+        <div class="sg-footer-inner">
+
+            <!-- BRAND -->
+
+            <div>
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="sg-footer-brand">
+
+                    <!-- SAME STUDYGPT LOGO -->
+                    <div class="sg-logo-mark">
+
+                        <svg class="sg-logo-svg"
+                             viewBox="0 0 64 64"
+                             fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+
+                            <path d="M8 25L32 13L56 25L32 37L8 25Z"
+                                  fill="white" />
+
+                            <path d="M17 31V39C17 43
+                            23 48
+                            32 49
+                            41 48
+                            47 43
+                            47 39V31L32 39L17 31Z"
+                                  fill="white"
+                                  opacity="0.9" />
+
+                            <path d="M49 10
+                            C50 14 52 16 56 17
+                            C52 18 50 20 49 24
+                            C48 20 46 18 42 17
+                            C46 16 48 14 49 10Z"
+                                  fill="#C4B5FD" />
+
+                        </svg>
+
+                    </div>
+
+                    <div class="sg-logo-text">
+
+                        Study<span>GPT</span>
+
+                    </div>
+
+                </a>
+
+
+                <p class="sg-footer-description">
+
+                    An AI-powered learning platform designed
+                    to help students learn from their own study
+                    materials.
+
+                </p>
+
+            </div>
+
+
+            <!-- PLATFORM -->
+
+            <div>
+
+                <h4>
+                    Platform
+                </h4>
+
+                <ul class="sg-footer-links">
+
+                    <li>
+                        <a href="#features">
+                            Features
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#how-it-works">
+                            How It Works
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#ai-preview">
+                            AI Assistant
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <!-- ACCOUNT -->
+
+            <div>
+
+                <h4>
+                    Account
+                </h4>
+
+                <ul class="sg-footer-links">
+
+                    <li>
+                        <a asp-controller="Auth"
+                           asp-action="Login">
+
+                            Login
+
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Auth"
+                           asp-action="Register">
+
+                            Register
+
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <!-- PROJECT -->
+
+            <div>
+
+                <h4>
+                    StudyGPT
+                </h4>
+
+                <ul class="sg-footer-links">
+
+                    <li>
+                        <a href="#roles">
+                            Students & Teachers
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#features">
+                            Learning Features
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <div class="sg-footer-bottom">
+
+            <span>
+                © 2026 StudyGPT. All rights reserved.
+            </span>
+
+            <span>
+                AI-Powered Learning Platform
+            </span>
+
+        </div>
+
+    </footer>
+
+
+</body>
+</html>
+

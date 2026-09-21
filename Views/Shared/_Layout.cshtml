@@ -1,0 +1,369 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - StudyGPT
+    </title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- StudyGPT CSS -->
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+         NAVBAR
+         ===================================================== -->
+
+    <header>
+
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom shadow-sm studypgpt-navbar">
+
+            <div class="container-fluid">
+
+                <!-- BRAND -->
+
+                <a class="navbar-brand fw-bold studypgpt-brand"
+                   asp-controller="Student"
+                   asp-action="Dashboard">
+
+                    <span class="brand-icon">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </span>
+
+                    <span class="brand-text">
+                        Study<span>GPT</span>
+                    </span>
+
+                </a>
+
+
+                <!-- MOBILE TOGGLE -->
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+
+                </button>
+
+
+                <!-- NAVIGATION -->
+
+                <div class="collapse navbar-collapse"
+                     id="mainNavbar">
+
+                    <ul class="navbar-nav me-auto mb-2 mb-sm-0 studypgpt-nav">
+
+
+                        <!-- STUDENT DASHBOARD -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               asp-controller="Student"
+                               asp-action="Dashboard">
+
+                                <i class="bi bi-speedometer2"></i>
+
+                                <span>
+                                    Dashboard
+                                </span>
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- SUBJECTS -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               asp-controller="Student"
+                               asp-action="Subjects">
+
+                                <i class="bi bi-book-half"></i>
+
+                                <span>
+                                    Subjects
+                                </span>
+
+                            </a>
+
+                        </li>
+
+
+                        <!-- AI ASSISTANT -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link ai-nav-link"
+                               asp-controller="Student"
+                               asp-action="AIAssistant">
+
+                                <i class="bi bi-robot"></i>
+
+                                <span>
+                                    AI Assistant
+                                </span>
+
+                                <span class="ai-new-badge">
+                                    AI
+                                </span>
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+
+                    <!-- RIGHT SIDE -->
+
+                    <ul class="navbar-nav">
+
+                        <!-- USER -->
+
+                        <li class="nav-item dropdown">
+
+                            <a class="nav-link dropdown-toggle user-nav-link"
+                               href="#"
+                               id="userDropdown"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+
+                                <span class="user-avatar">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+
+                                <span>
+                                    Student
+                                </span>
+
+                            </a>
+
+
+                            <ul class="dropdown-menu dropdown-menu-end studypgpt-user-menu"
+                                aria-labelledby="userDropdown">
+
+
+                                <!-- USER HEADER -->
+
+                                <li>
+
+                                    <div class="user-menu-header">
+
+                                        <div class="user-menu-avatar">
+                                            <i class="bi bi-person-fill"></i>
+                                        </div>
+
+                                        <div>
+                                            <strong>
+                                                Student
+                                            </strong>
+
+                                            <small>
+                                                StudyGPT Account
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                </li>
+
+
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+
+
+                                <!-- DASHBOARD -->
+
+                                <li>
+
+                                    <a class="dropdown-item"
+                                       asp-controller="Student"
+                                       asp-action="Dashboard">
+
+                                        <span class="dropdown-icon">
+                                            <i class="bi bi-speedometer2"></i>
+                                        </span>
+
+                                        Dashboard
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- SUBJECTS -->
+
+                                <li>
+
+                                    <a class="dropdown-item"
+                                       asp-controller="Student"
+                                       asp-action="Subjects">
+
+                                        <span class="dropdown-icon">
+                                            <i class="bi bi-book"></i>
+                                        </span>
+
+                                        My Subjects
+
+                                    </a>
+
+                                </li>
+
+
+                                <!-- PROFILE -->
+
+                                <li>
+
+                                    <a class="dropdown-item"
+                                       asp-controller="Student"
+                                       asp-action="Profile">
+
+                                        <span class="dropdown-icon">
+                                            <i class="bi bi-person-circle"></i>
+                                        </span>
+
+                                        My Profile
+
+                                    </a>
+
+                                </li>
+
+
+                                <li>
+
+                                    <hr class="dropdown-divider" />
+
+                                </li>
+
+
+                                <!-- LOGOUT -->
+
+                                <li>
+
+                                    <a class="dropdown-item text-danger logout-item"
+                                       asp-controller="Auth"
+                                       asp-action="Logout">
+
+                                        <span class="dropdown-icon logout-icon">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                        </span>
+
+                                        Logout
+
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main role="main"
+          class="pb-4 studypgpt-main">
+
+        @RenderBody()
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="border-top footer text-muted studypgpt-footer">
+
+        <div class="container">
+
+            <div class="footer-content">
+
+                <div>
+
+                    <span class="footer-brand">
+                        <i class="bi bi-mortarboard-fill"></i>
+                        StudyGPT
+                    </span>
+
+                    <span class="footer-divider">
+                        |
+                    </span>
+
+                    <span>
+                        Smart learning powered by AI
+                    </span>
+
+                </div>
+
+                <div>
+
+                    &copy; @DateTime.Now.Year StudyGPT
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>

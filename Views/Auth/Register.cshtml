@@ -1,0 +1,139 @@
+﻿@model StudyGPT.Web.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="login-container">
+
+    <div class="login-card register-card">
+
+        <div class="login-header">
+            <h1>StudyGPT</h1>
+            <p>AI-Powered Learning Platform</p>
+        </div>
+
+        <h2>Create Your Account</h2>
+
+        <p class="login-subtitle">
+            Create your student account and start learning.
+        </p>
+
+        <form asp-action="Register" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary">
+            </div>
+
+            <!-- Full Name -->
+            <div class="form-group">
+
+                <label asp-for="FullName">
+                    Full Name
+                </label>
+
+                <input asp-for="FullName"
+                       class="form-control"
+                       placeholder="Enter your full name"
+                       autocomplete="name" />
+
+                <span asp-validation-for="FullName"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- Email -->
+            <div class="form-group">
+
+                <label asp-for="Email">
+                    Email
+                </label>
+
+                <input asp-for="Email"
+                       class="form-control"
+                       placeholder="Enter your email"
+                       autocomplete="email" />
+
+                <span asp-validation-for="Email"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- Password -->
+            <div class="form-group">
+
+                <label asp-for="Password">
+                    Password
+                </label>
+
+                <input asp-for="Password"
+                       class="form-control"
+                       placeholder="Create a password"
+                       autocomplete="new-password" />
+
+                <span asp-validation-for="Password"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+
+                <label asp-for="ConfirmPassword">
+                    Confirm Password
+                </label>
+
+                <input asp-for="ConfirmPassword"
+                       class="form-control"
+                       placeholder="Confirm your password"
+                       autocomplete="new-password" />
+
+                <span asp-validation-for="ConfirmPassword"
+                      class="field-validation">
+                </span>
+
+            </div>
+
+
+            <!-- Register Button -->
+            <button type="submit"
+                    class="login-button">
+
+                Create Account
+
+            </button>
+
+        </form>
+
+
+        <div class="register-footer">
+
+            <span>Already have an account?</span>
+
+            <a asp-controller="Auth"
+               asp-action="Login">
+
+                Login
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

@@ -1,0 +1,230 @@
+﻿@{
+    ViewData["Title"] = "Upload Material";
+    Layout = "_TeacherLayout";
+
+    var subjects =
+        ViewBag.Subjects as
+        List<StudyGPT.Web.Models.SubjectViewModel>
+        ?? new List<StudyGPT.Web.Models.SubjectViewModel>();
+}
+
+<div class="teacher-page">
+
+    <!-- HEADER -->
+    <div class="teacher-page-header">
+
+        <div>
+
+            <span class="teacher-section-label">
+                MATERIAL MANAGEMENT
+            </span>
+
+            <h1>
+                Upload Study Material
+            </h1>
+
+            <p>
+                Add learning resources for students to use with StudyGPT.
+            </p>
+
+        </div>
+
+        <div class="teacher-page-header-icon">
+
+            <i class="bi bi-cloud-arrow-up-fill"></i>
+
+        </div>
+
+    </div>
+
+
+    <!-- ERROR -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="teacher-alert teacher-alert-danger">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <span>
+                @TempData["Error"]
+            </span>
+
+        </div>
+    }
+
+
+    <!-- UPLOAD CARD -->
+    <div class="teacher-card teacher-upload-card">
+
+        <div class="teacher-card-header">
+
+            <div>
+
+                <h3>
+                    Material Information
+                </h3>
+
+                <p>
+                    Enter the material details and select a file to upload.
+                </p>
+
+            </div>
+
+            <div class="teacher-card-header-icon">
+
+                <i class="bi bi-file-earmark-plus"></i>
+
+            </div>
+
+        </div>
+
+
+        <form asp-controller="Teacher"
+              asp-action="UploadMaterial"
+              method="post"
+              enctype="multipart/form-data">
+
+
+            <!-- TITLE -->
+            <div class="teacher-form-group">
+
+                <label>
+                    Material Title
+                </label>
+
+                <input type="text"
+                       name="title"
+                       class="teacher-input"
+                       placeholder="Enter material title"
+                       required />
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+            <div class="teacher-form-group">
+
+                <label>
+                    Description
+                </label>
+
+                <textarea name="description"
+                          class="teacher-input teacher-textarea"
+                          rows="4"
+                          placeholder="Enter a short description of the material"></textarea>
+
+            </div>
+
+
+            <!-- SUBJECT -->
+            <div class="teacher-form-group">
+
+                <label>
+                    Subject
+                </label>
+
+                <select name="subjectId"
+                        class="teacher-input"
+                        required>
+
+                    <option value="">
+                        Select Subject
+                    </option>
+
+                    @foreach (var subject in subjects)
+                    {
+                        <option value="@subject.SubjectId">
+                            @subject.SubjectName
+                        </option>
+                    }
+
+                </select>
+
+                @if (subjects.Count == 0)
+                {
+                    <small class="teacher-form-help teacher-warning-text">
+
+                        <i class="bi bi-exclamation-circle"></i>
+
+                        No subjects available. Please create a subject first.
+
+                    </small>
+                }
+
+            </div>
+
+
+            <!-- FILE -->
+            <div class="teacher-form-group">
+
+                <label>
+                    Study Material File
+                </label>
+
+                <div class="teacher-file-upload">
+
+                    <div class="teacher-file-icon">
+
+                        <i class="bi bi-cloud-arrow-up"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Select your file
+                        </strong>
+
+                        <span>
+                            PDF, DOCX, PPT, PPTX, JPG or PNG
+                        </span>
+
+                    </div>
+
+                    <input type="file"
+                           name="file"
+                           accept=".pdf,.docx,.ppt,.pptx,.jpg,.png"
+                           required />
+
+                </div>
+
+                <small class="teacher-form-help">
+
+                    Allowed formats:
+                    PDF, DOCX, PPT, PPTX, JPG, PNG
+
+                </small>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+            <div class="teacher-form-actions">
+
+                <button type="submit"
+                        class="teacher-primary-btn">
+
+                    <i class="bi bi-cloud-arrow-up"></i>
+
+                    Upload Material
+
+                </button>
+
+
+                <a asp-controller="Teacher"
+                   asp-action="Materials"
+                   class="teacher-secondary-btn">
+
+                    <i class="bi bi-x-lg"></i>
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

@@ -1,0 +1,584 @@
+﻿@model List<StudyGPT.Web.Models.SubjectViewModel>
+
+@{
+    ViewData["Title"] = "Subjects";
+}
+
+<div class="subjects-page">
+
+    <!-- PAGE HEADER -->
+    <div class="subjects-header">
+
+        <div class="subjects-header-content">
+
+            <span class="section-label">
+                LEARNING SPACE
+            </span>
+
+            <h2>
+                Your Subjects
+            </h2>
+
+            <p>
+                Explore your subjects and start learning.
+            </p>
+
+        </div>
+
+        <div class="subjects-header-icon">
+            <i class="bi bi-book-half"></i>
+        </div>
+
+    </div>
+
+
+    <!-- ERROR -->
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger subjects-alert">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+            @ViewBag.Error
+
+        </div>
+    }
+
+
+    <!-- SUBJECT COUNT -->
+    <div class="subjects-summary">
+
+        <div class="subjects-summary-content">
+
+            <span class="summary-label">
+                YOUR LEARNING
+            </span>
+
+            <strong>
+                @(Model?.Count ?? 0)
+            </strong>
+
+            <span class="summary-title">
+                Subjects Available
+            </span>
+
+        </div>
+
+        <div class="summary-icon">
+            <i class="bi bi-collection-fill"></i>
+        </div>
+
+    </div>
+
+
+    <!-- SUBJECTS -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="subjects-grid">
+
+            @foreach (var subject in Model)
+            {
+                <div class="subject-card">
+
+                    <!-- CARD TOP -->
+                    <div class="subject-card-top">
+
+                        <div class="subject-icon">
+                            <i class="bi bi-book-fill"></i>
+                        </div>
+
+                        <span class="subject-number">
+                            #@subject.SubjectId
+                        </span>
+
+                    </div>
+
+
+                    <!-- CARD CONTENT -->
+                    <div class="subject-card-content">
+
+                        <h3>
+                            @subject.SubjectName
+                        </h3>
+
+                        <p>
+                            @(string.IsNullOrWhiteSpace(subject.Description)
+                                ? "Explore study materials and learning resources for this subject."
+                                : subject.Description)
+                        </p>
+
+                    </div>
+
+
+                    <!-- FOOTER -->
+                    <div class="subject-card-footer">
+
+                        <span>
+                            <i class="bi bi-file-earmark-text"></i>
+                            Study Materials
+                        </span>
+
+                        <a asp-controller="Student"
+                           asp-action="SubjectMaterials"
+                           asp-route-id="@subject.SubjectId"
+                           class="subject-view-btn">
+
+                            Open
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <!-- EMPTY -->
+        <div class="empty-subjects">
+
+            <div class="empty-icon">
+                <i class="bi bi-book"></i>
+            </div>
+
+            <h3>
+                No subjects available
+            </h3>
+
+            <p>
+                Your subjects will appear here once they are added.
+            </p>
+
+        </div>
+    }
+
+</div>
+
+
+<style>
+
+    /* =========================================
+           SUBJECTS PAGE
+           ========================================= */
+
+    .subjects-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 25px 20px 50px;
+    }
+
+
+    /* =========================================
+           HEADER
+           ========================================= */
+
+    .subjects-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 32px;
+        margin-bottom: 24px;
+        background: linear-gradient( 135deg, #ffffff 0%, #f7f5ff 100% );
+        border: 1px solid #ebe8f7;
+        border-radius: 22px;
+        box-shadow: 0 10px 30px rgba(50, 40, 100, 0.06);
+    }
+
+
+    .subjects-header-content {
+        min-width: 0;
+    }
+
+
+    .subjects-header h2 {
+        margin: 5px 0 8px;
+        font-size: 30px;
+        font-weight: 750;
+        color: #29253d;
+    }
+
+
+    .subjects-header p {
+        margin: 0;
+        color: #77718d;
+        font-size: 15px;
+    }
+
+
+    .subjects-header-icon {
+        width: 75px;
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 20px;
+        background: linear-gradient( 135deg, #6c5ce7, #8e7cff );
+        color: white;
+        font-size: 32px;
+        box-shadow: 0 12px 28px rgba(108, 92, 231, 0.25);
+    }
+
+
+    /* =========================================
+           SECTION LABEL
+           ========================================= */
+
+    .section-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+        color: #7c7598;
+    }
+
+
+    /* =========================================
+           ERROR
+           ========================================= */
+
+    .subjects-alert {
+        display: flex;
+        align-items: center;
+        padding: 14px 18px;
+        margin-bottom: 24px;
+        border-radius: 13px;
+        border: 1px solid #ffd6d6;
+        background: #fff5f5;
+        color: #c0392b;
+    }
+
+
+    /* =========================================
+           SUMMARY
+           ========================================= */
+
+    .subjects-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 22px 25px;
+        margin-bottom: 25px;
+        background: white;
+        border: 1px solid #eae8f1;
+        border-radius: 18px;
+        box-shadow: 0 7px 22px rgba(40, 30, 80, 0.05);
+    }
+
+
+    .subjects-summary-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    .summary-label {
+        font-size: 10px;
+        font-weight: 750;
+        letter-spacing: 1.3px;
+        color: #8b859b;
+    }
+
+
+    .subjects-summary strong {
+        margin-top: 2px;
+        font-size: 32px;
+        line-height: 1.1;
+        color: #6c5ce7;
+    }
+
+
+    .summary-title {
+        margin-top: 3px;
+        color: #77718d;
+        font-size: 14px;
+    }
+
+
+    .summary-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background: #f0edff;
+        color: #6c5ce7;
+        font-size: 23px;
+    }
+
+
+    /* =========================================
+           SUBJECT GRID
+           ========================================= */
+
+    .subjects-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+
+    /* =========================================
+           SUBJECT CARD
+           ========================================= */
+
+    .subject-card {
+        display: flex;
+        flex-direction: column;
+        min-height: 285px;
+        background: white;
+        border: 1px solid #e9e7f0;
+        border-radius: 19px;
+        padding: 22px;
+        box-shadow: 0 7px 22px rgba(40, 30, 80, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            border-color: #d9d3ff;
+            box-shadow: 0 15px 35px rgba(50, 40, 100, 0.11);
+        }
+
+
+    /* =========================================
+           CARD TOP
+           ========================================= */
+
+    .subject-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+
+    .subject-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background: linear-gradient( 135deg, #f0edff, #e8e3ff );
+        color: #6c5ce7;
+        font-size: 23px;
+    }
+
+
+    .subject-number {
+        padding: 6px 10px;
+        border-radius: 20px;
+        background: #f7f6fb;
+        color: #888298;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+
+    /* =========================================
+           CARD CONTENT
+           ========================================= */
+
+    .subject-card-content {
+        flex: 1;
+    }
+
+
+        .subject-card-content h3 {
+            margin: 0 0 9px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #29253d;
+            word-break: break-word;
+        }
+
+
+        .subject-card-content p {
+            margin: 0;
+            color: #77718d;
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+
+    /* =========================================
+           CARD FOOTER
+           ========================================= */
+
+    .subject-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 22px;
+        padding-top: 17px;
+        border-top: 1px solid #efedf4;
+    }
+
+
+        .subject-card-footer > span {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #888298;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+            .subject-card-footer > span i {
+                color: #6c5ce7;
+                font-size: 15px;
+            }
+
+
+    /* =========================================
+           OPEN BUTTON
+           ========================================= */
+
+    .subject-view-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 9px 14px;
+        border-radius: 10px;
+        background: #6c5ce7;
+        color: white !important;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 650;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+
+        .subject-view-btn:hover {
+            background: #5948d1;
+            color: white !important;
+            transform: translateX(2px);
+        }
+
+
+    /* =========================================
+           EMPTY STATE
+           ========================================= */
+
+    .empty-subjects {
+        text-align: center;
+        padding: 70px 25px;
+        background: white;
+        border: 1px solid #eae8f1;
+        border-radius: 20px;
+        box-shadow: 0 7px 22px rgba(40, 30, 80, 0.05);
+    }
+
+
+    .empty-icon {
+        width: 75px;
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        border-radius: 20px;
+        background: #f0edff;
+        color: #6c5ce7;
+        font-size: 31px;
+    }
+
+
+    .empty-subjects h3 {
+        margin: 0 0 8px;
+        color: #302c42;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+
+    .empty-subjects p {
+        margin: 0;
+        color: #888298;
+        font-size: 14px;
+    }
+
+
+    /* =========================================
+           RESPONSIVE
+           ========================================= */
+
+    @@media (max-width: 1000px) {
+
+        .subjects-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .subjects-page {
+            padding: 15px 12px 35px;
+        }
+
+
+        .subjects-header {
+            padding: 23px;
+            border-radius: 18px;
+        }
+
+
+            .subjects-header h2 {
+                font-size: 25px;
+            }
+
+
+        .subjects-header-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            font-size: 25px;
+        }
+
+
+        .subjects-grid {
+            grid-template-columns: 1fr;
+        }
+
+
+        .subjects-summary {
+            padding: 18px 20px;
+        }
+
+
+        .subject-card {
+            min-height: 260px;
+        }
+    }
+
+
+    @@media (max-width: 450px) {
+
+        .subjects-header-icon {
+            display: none;
+        }
+
+
+        .subject-card-footer {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+
+        .subject-view-btn {
+            width: 100%;
+        }
+    }
+
+</style>

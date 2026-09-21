@@ -1,0 +1,855 @@
+﻿@model List<StudyGPT.Web.Models.StudyMaterialViewModel>
+
+@{
+    ViewData["Title"] = "Study Materials";
+}
+
+<div class="materials-page">
+
+    <!-- =========================================
+         HEADER
+         ========================================= -->
+
+    <div class="materials-header">
+
+        <div class="materials-header-content">
+
+            <span class="section-label">
+                SUBJECT LEARNING
+            </span>
+
+            <h2>
+                Study Materials
+            </h2>
+
+            <p>
+                Explore the materials available for this subject.
+            </p>
+
+        </div>
+
+        <div class="materials-header-icon">
+            <i class="bi bi-folder2-open"></i>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         ERROR MESSAGE
+         ========================================= -->
+    @if (ViewBag.Error != null)
+    {
+        <div class="materials-alert">
+
+            <i class="bi bi-exclamation-circle-fill"></i>
+
+            <div>
+
+                <strong>
+                    Unable to load materials
+                </strong>
+
+                <span>
+                    @ViewBag.Error
+                </span>
+
+            </div>
+
+        </div>
+    }
+
+
+    <!-- =========================================
+         TEMP ERROR
+         ========================================= -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger materials-temp-error">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+            @TempData["Error"]
+
+        </div>
+    }
+
+
+    <!-- =========================================
+         MATERIALS
+         ========================================= -->
+    @if (Model != null && Model.Any())
+    {
+        <div class="materials-topbar">
+
+            <div class="materials-count-area">
+
+                <span class="materials-count">
+
+                    @Model.Count
+                    material@(Model.Count == 1 ? "" : "s")
+
+                </span>
+
+                <span class="materials-count-description">
+
+                    available for this subject
+
+                </span>
+
+            </div>
+
+
+            <a asp-controller="Student"
+               asp-action="Subjects"
+               class="back-subject-link">
+
+                <i class="bi bi-arrow-left"></i>
+
+                All Subjects
+
+            </a>
+
+        </div>
+
+
+        <!-- =========================================
+             MATERIAL GRID
+             ========================================= -->
+
+        <div class="materials-grid">
+
+            @foreach (var material in Model)
+            {
+                var extension = "";
+
+                if (!string.IsNullOrWhiteSpace(material.FileName))
+                {
+                    extension =
+                        System.IO.Path
+                            .GetExtension(material.FileName)
+                            .Replace(".", "")
+                            .ToUpper();
+                }
+
+
+                <div class="material-card">
+
+
+                    <!-- =================================
+                         CARD TOP
+                         ================================= -->
+
+                    <div class="material-card-top">
+
+                        <div class="material-card-icon">
+
+                            @if (extension == "PDF")
+                            {
+                                <i class="bi bi-file-earmark-pdf-fill"></i>
+                            }
+                            else if (
+                                extension == "DOCX" ||
+                                extension == "DOC")
+                            {
+                                <i class="bi bi-file-earmark-word-fill"></i>
+                            }
+                            else if (
+                                extension == "PPT" ||
+                                extension == "PPTX")
+                            {
+                                <i class="bi bi-file-earmark-ppt-fill"></i>
+                            }
+                            else if (
+                                extension == "JPG" ||
+                                extension == "JPEG" ||
+                                extension == "PNG")
+                            {
+                                <i class="bi bi-file-earmark-image-fill"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-file-earmark-text-fill"></i>
+                            }
+
+                        </div>
+
+
+                        <span class="material-type">
+
+                            @extension
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- =================================
+                         CARD CONTENT
+                         ================================= -->
+
+                    <div class="material-card-content">
+
+                        <h3 title="@material.Title">
+
+                            @material.Title
+
+                        </h3>
+
+
+                        <p>
+
+                            @(string.IsNullOrWhiteSpace(material.Description)
+                                ? "Study material for this subject."
+                                : material.Description)
+
+                        </p>
+
+
+                        <div class="material-meta">
+
+                            <span>
+
+                                <i class="bi bi-calendar3"></i>
+
+                                @material.UploadedDate.ToString(
+                                    "dd MMM yyyy"
+                                )
+
+                            </span>
+
+
+                            <span>
+
+                                <i class="bi bi-file-earmark"></i>
+
+                                @extension File
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================
+                         CARD FOOTER
+                         ================================= -->
+
+                    <div class="material-card-footer">
+
+
+                        <!-- FILE NAME -->
+
+                        <div class="material-file-name"
+                             title="@material.FileName">
+
+                            <i class="bi bi-paperclip"></i>
+
+                            <span>
+                                @material.FileName
+                            </span>
+
+                        </div>
+
+
+                        <!-- VIEW BUTTON -->
+
+                        <a href="@Url.Action(
+                                                                                  "DownloadMaterial",
+                                                                                  "Student",
+                                                                                  new
+                                                                                  {
+                                                                                      id = material.MaterialId
+                                                                                  })"
+                           class="material-open-btn"
+                           target="_blank">
+
+                            <i class="bi bi-eye-fill"></i>
+
+                            View
+
+                        </a>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <!-- =========================================
+             EMPTY STATE
+             ========================================= -->
+
+        <div class="empty-materials">
+
+            <div class="empty-material-icon">
+
+                <i class="bi bi-folder2-open"></i>
+
+            </div>
+
+
+            <h3>
+
+                No study materials yet
+
+            </h3>
+
+
+            <p>
+
+                There are no materials uploaded for this subject.
+                Check back later when your teacher uploads new material.
+
+            </p>
+
+
+            <a asp-controller="Student"
+               asp-action="Subjects"
+               class="back-subjects-btn">
+
+                <i class="bi bi-arrow-left"></i>
+
+                Back to Subjects
+
+            </a>
+
+        </div>
+    }
+
+</div>
+
+
+<style>
+
+    /* =========================================
+           MATERIALS PAGE
+           ========================================= */
+
+    .materials-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 25px 20px 50px;
+    }
+
+
+    /* =========================================
+           HEADER
+           ========================================= */
+
+    .materials-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 32px;
+        margin-bottom: 25px;
+        background: linear-gradient( 135deg, #ffffff 0%, #f7f5ff 100% );
+        border: 1px solid #ebe8f7;
+        border-radius: 22px;
+        box-shadow: 0 10px 30px rgba(50, 40, 100, 0.06);
+    }
+
+
+    .materials-header-content {
+        min-width: 0;
+    }
+
+
+    .materials-header h2 {
+        margin: 5px 0 8px;
+        font-size: 30px;
+        font-weight: 750;
+        color: #29253d;
+    }
+
+
+    .materials-header p {
+        margin: 0;
+        color: #77718d;
+        font-size: 15px;
+    }
+
+
+    .section-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+        color: #7c7598;
+    }
+
+
+    .materials-header-icon {
+        width: 75px;
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 20px;
+        background: linear-gradient( 135deg, #6c5ce7, #8e7cff );
+        color: white;
+        font-size: 32px;
+        box-shadow: 0 12px 28px rgba(108, 92, 231, 0.25);
+    }
+
+
+    /* =========================================
+           ERROR
+           ========================================= */
+
+    .materials-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 15px 18px;
+        margin-bottom: 22px;
+        border-radius: 14px;
+        background: #fff4f4;
+        border: 1px solid #ffd6d6;
+        color: #c0392b;
+    }
+
+
+        .materials-alert > i {
+            margin-top: 2px;
+            font-size: 17px;
+        }
+
+
+        .materials-alert div {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+
+        .materials-alert strong {
+            font-size: 14px;
+        }
+
+
+        .materials-alert span {
+            font-size: 13px;
+            color: #9f5149;
+        }
+
+
+    .materials-temp-error {
+        border-radius: 13px;
+    }
+
+
+    /* =========================================
+           TOP BAR
+           ========================================= */
+
+    .materials-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 22px;
+        padding: 18px 20px;
+        background: white;
+        border: 1px solid #eae8f1;
+        border-radius: 16px;
+        box-shadow: 0 6px 18px rgba(40, 30, 80, 0.04);
+    }
+
+
+    .materials-count-area {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+    }
+
+
+    .materials-count {
+        color: #6c5ce7;
+        font-size: 18px;
+        font-weight: 750;
+    }
+
+
+    .materials-count-description {
+        color: #888298;
+        font-size: 13px;
+    }
+
+
+    .back-subject-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #6c5ce7;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 650;
+        transition: 0.2s ease;
+    }
+
+
+        .back-subject-link:hover {
+            color: #5141bd;
+            transform: translateX(-2px);
+        }
+
+
+    /* =========================================
+           MATERIAL GRID
+           ========================================= */
+
+    .materials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+
+    /* =========================================
+           MATERIAL CARD
+           ========================================= */
+
+    .material-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 315px;
+        background: white;
+        border: 1px solid #e9e7f0;
+        border-radius: 19px;
+        padding: 21px;
+        box-shadow: 0 7px 22px rgba(40, 30, 80, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+
+        .material-card:hover {
+            transform: translateY(-5px);
+            border-color: #d9d3ff;
+            box-shadow: 0 15px 35px rgba(50, 40, 100, 0.11);
+        }
+
+
+    /* =========================================
+           CARD TOP
+           ========================================= */
+
+    .material-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 19px;
+    }
+
+
+    .material-card-icon {
+        width: 57px;
+        height: 57px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background: #f0edff;
+        color: #6c5ce7;
+        font-size: 25px;
+    }
+
+
+    .material-type {
+        padding: 6px 10px;
+        border-radius: 20px;
+        background: #f7f6fb;
+        color: #888298;
+        font-size: 10px;
+        font-weight: 750;
+        letter-spacing: 0.7px;
+    }
+
+
+    /* =========================================
+           CARD CONTENT
+           ========================================= */
+
+    .material-card-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+
+        .material-card-content h3 {
+            margin: 0 0 9px;
+            color: #29253d;
+            font-size: 19px;
+            font-weight: 700;
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        .material-card-content p {
+            margin: 0;
+            color: #77718d;
+            font-size: 13px;
+            line-height: 1.65;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+
+    /* =========================================
+           META
+           ========================================= */
+
+    .material-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+        color: #8b859b;
+        font-size: 11px;
+    }
+
+
+        .material-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+
+        .material-meta i {
+            color: #6c5ce7;
+            font-size: 13px;
+        }
+
+
+    /* =========================================
+           CARD FOOTER
+           ========================================= */
+
+    .material-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #efedf4;
+    }
+
+
+    /* =========================================
+           FILE NAME
+           ========================================= */
+
+    .material-file-name {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+        color: #77718d;
+        font-size: 11px;
+    }
+
+
+        .material-file-name i {
+            flex-shrink: 0;
+            color: #6c5ce7;
+            font-size: 14px;
+        }
+
+
+        .material-file-name span {
+            min-width: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+
+    /* =========================================
+           VIEW BUTTON
+           ========================================= */
+
+    .material-open-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        flex-shrink: 0;
+        padding: 9px 14px;
+        border-radius: 10px;
+        background: #6c5ce7;
+        color: white !important;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 650;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+
+        .material-open-btn:hover {
+            background: #5948d1;
+            color: white !important;
+            transform: translateY(-1px);
+        }
+
+
+    /* =========================================
+           EMPTY STATE
+           ========================================= */
+
+    .empty-materials {
+        text-align: center;
+        padding: 75px 25px;
+        background: white;
+        border: 1px solid #eae8f1;
+        border-radius: 20px;
+        box-shadow: 0 7px 22px rgba(40, 30, 80, 0.05);
+    }
+
+
+    .empty-material-icon {
+        width: 78px;
+        height: 78px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        border-radius: 21px;
+        background: #f0edff;
+        color: #6c5ce7;
+        font-size: 32px;
+    }
+
+
+    .empty-materials h3 {
+        margin: 0 0 9px;
+        color: #302c42;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+
+    .empty-materials p {
+        max-width: 550px;
+        margin: 0 auto 22px;
+        color: #888298;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+
+    /* =========================================
+           BACK BUTTON
+           ========================================= */
+
+    .back-subjects-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 17px;
+        border: 1px solid #dcd7f5;
+        border-radius: 10px;
+        background: #f8f7ff;
+        color: #6c5ce7;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 650;
+        transition: 0.2s ease;
+    }
+
+
+        .back-subjects-btn:hover {
+            background: #6c5ce7;
+            border-color: #6c5ce7;
+            color: white;
+        }
+
+
+    /* =========================================
+           RESPONSIVE
+           ========================================= */
+
+    @@media (max-width: 1000px) {
+
+        .materials-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .materials-page {
+            padding: 15px 12px 35px;
+        }
+
+
+        .materials-header {
+            padding: 23px;
+            border-radius: 18px;
+        }
+
+
+            .materials-header h2 {
+                font-size: 25px;
+            }
+
+
+        .materials-header-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            font-size: 25px;
+        }
+
+
+        .materials-grid {
+            grid-template-columns: 1fr;
+        }
+
+
+        .materials-topbar {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+
+        .back-subject-link {
+            align-self: flex-start;
+        }
+    }
+
+
+    @@media (max-width: 450px) {
+
+        .materials-header-icon {
+            display: none;
+        }
+
+
+        .material-card-footer {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+
+        .material-open-btn {
+            width: 100%;
+        }
+    }
+
+</style>

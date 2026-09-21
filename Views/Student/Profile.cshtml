@@ -1,0 +1,248 @@
+﻿@model StudyGPT.Web.Models.ProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<div class="profile-page">
+
+    <!-- HEADER -->
+    <div class="profile-header">
+
+        <div class="profile-header-left">
+
+            <div class="profile-large-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div class="profile-header-info">
+
+                <span class="profile-label">
+                    MY PROFILE
+                </span>
+
+                <h1>
+                    @(string.IsNullOrWhiteSpace(Model?.FullName)
+                        ? "Teacher"
+                        : Model.FullName)
+                </h1>
+
+                <p>
+                    <i class="bi bi-person-workspace"></i>
+                    Teacher Account
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ERROR -->
+    @if (ViewBag.Error != null)
+    {
+        <div class="profile-alert">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <span>
+                @ViewBag.Error
+            </span>
+
+        </div>
+    }
+
+
+    <!-- PROFILE GRID -->
+    <div class="profile-grid">
+
+        <!-- PERSONAL INFORMATION -->
+        <div class="profile-card">
+
+            <div class="profile-card-header">
+
+                <div class="profile-card-icon blue">
+                    <i class="bi bi-person-vcard-fill"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        ACCOUNT INFORMATION
+                    </span>
+
+                    <h2>
+                        Personal Details
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-details">
+
+                <!-- NAME -->
+                <div class="profile-detail">
+
+                    <div class="detail-icon">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+
+                    <div class="detail-content">
+
+                        <span>
+                            Full Name
+                        </span>
+
+                        <strong>
+                            @(Model?.FullName ?? "Not available")
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EMAIL -->
+                <div class="profile-detail">
+
+                    <div class="detail-icon">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+
+                    <div class="detail-content">
+
+                        <span>
+                            Email Address
+                        </span>
+
+                        <strong>
+                            @(Model?.Email ?? "Not available")
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- USER ID -->
+               @*  <div class="profile-detail">
+
+                    <div class="detail-icon">
+                        <i class="bi bi-hash"></i>
+                    </div>
+
+                    <div class="detail-content">
+
+                        <span>
+                            User ID
+                        </span>
+
+                        <strong>
+                            @(Model?.Id.ToString() ?? "Not available")
+                        </strong>
+
+                    </div>
+
+                </div>
+ *@
+
+                <!-- ROLE -->
+                <div class="profile-detail">
+
+                    <div class="detail-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <div class="detail-content">
+
+                        <span>
+                            Account Role
+                        </span>
+
+                        <strong>
+                            @(string.IsNullOrWhiteSpace(Model?.Role)
+                                ? "Teacher"
+                                : Model.Role)
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TEACHER INFORMATION -->
+        <div class="profile-card teacher-account-card">
+
+            <div class="teacher-card-top">
+
+                <div class="teacher-icon">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
+
+                <span class="teacher-badge">
+                    TEACHER
+                </span>
+
+            </div>
+
+
+            <h2>
+                Teacher Account
+            </h2>
+
+
+            <p>
+                Your StudyGPT teacher account allows you to manage
+                subjects, upload study materials and provide
+                learning resources to students.
+            </p>
+
+
+            <div class="teacher-features">
+
+                <div>
+                    <i class="bi bi-book-fill"></i>
+                    <span>Manage Subjects</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Upload Study Materials</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-people-fill"></i>
+                    <span>Manage Student Learning</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-robot"></i>
+                    <span>StudyGPT AI Learning Platform</span>
+                </div>
+
+            </div>
+
+
+            <a asp-controller="Teacher"
+               asp-action="Dashboard"
+               class="teacher-dashboard-btn">
+
+                <i class="bi bi-grid-1x2-fill"></i>
+
+                Back to Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

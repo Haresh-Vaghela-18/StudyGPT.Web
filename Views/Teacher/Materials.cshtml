@@ -1,0 +1,313 @@
+﻿@model List<StudyGPT.Web.Models.TeacherMaterialViewModel>
+
+@{
+    ViewData["Title"] = "My Materials";
+    Layout = "_TeacherLayout";
+}
+
+<div class="teacher-page">
+
+    <!-- HEADER -->
+    <div class="teacher-page-header">
+
+        <div>
+            <span class="teacher-section-label">
+                MATERIAL MANAGEMENT
+            </span>
+
+            <h1>
+                My Study Materials
+            </h1>
+
+            <p>
+                View and manage the learning materials you have uploaded.
+            </p>
+        </div>
+
+        <div class="teacher-page-header-actions">
+
+            <a asp-controller="Teacher"
+               asp-action="UploadMaterial"
+               class="teacher-primary-btn">
+
+                <i class="bi bi-cloud-arrow-up"></i>
+
+                Upload Material
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUCCESS -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="teacher-alert teacher-alert-success">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            <span>
+                @TempData["Success"]
+            </span>
+
+        </div>
+    }
+
+
+    <!-- ERROR -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="teacher-alert teacher-alert-danger">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <span>
+                @TempData["Error"]
+            </span>
+
+        </div>
+    }
+
+
+    <!-- SUMMARY -->
+    <div class="teacher-summary-row">
+
+        <div class="teacher-summary-card">
+
+            <div class="teacher-summary-icon">
+                <i class="bi bi-file-earmark-text-fill"></i>
+            </div>
+
+            <div>
+                <span>
+                    Total Materials
+                </span>
+
+                <strong>
+                    @(Model?.Count ?? 0)
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MATERIAL CARD -->
+    <div class="teacher-card">
+
+        <div class="teacher-card-header">
+
+            <div>
+                <h3>
+                    Uploaded Materials
+                </h3>
+
+                <p>
+                    Materials uploaded to your teacher account.
+                </p>
+            </div>
+
+            <div class="teacher-card-header-icon">
+                <i class="bi bi-folder2-open"></i>
+            </div>
+
+        </div>
+
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="teacher-empty-state">
+
+                <div class="teacher-empty-icon">
+                    <i class="bi bi-file-earmark-x"></i>
+                </div>
+
+                <h3>
+                    No Materials Found
+                </h3>
+
+                <p>
+                    You haven't uploaded any study materials yet.
+                </p>
+
+                <a asp-controller="Teacher"
+                   asp-action="UploadMaterial"
+                   class="teacher-primary-btn">
+
+                    <i class="bi bi-cloud-arrow-up"></i>
+
+                    Upload Your First Material
+
+                </a>
+
+            </div>
+        }
+        else
+        {
+            <div class="teacher-table-wrapper">
+
+                <table class="teacher-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                #
+                            </th>
+
+                            <th>
+                                Material
+                            </th>
+
+                            <th>
+                                File
+                            </th>
+
+                            <th>
+                                Uploaded
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @{
+                            int index = 1;
+                        }
+
+                        @foreach (var material in Model)
+                        {
+                            <tr>
+
+                                <!-- NUMBER -->
+                                <td>
+
+                                    <span class="student-number">
+                                        @index
+                                    </span>
+
+                                </td>
+
+
+                                <!-- MATERIAL -->
+                                <td>
+
+                                    <div class="material-info">
+
+                                        <div class="material-icon">
+                                            <i class="bi bi-file-earmark-text-fill"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                @material.Title
+                                            </strong>
+
+                                            @if (!string.IsNullOrWhiteSpace(material.Description))
+                                            {
+                                                <small>
+                                                    @material.Description
+                                                </small>
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- FILE -->
+                                <td>
+
+                                    <span class="material-file">
+
+                                        <i class="bi bi-paperclip"></i>
+
+                                        @material.FileName
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- DATE -->
+                                <td>
+
+                                    <span class="material-date">
+
+                                        @material.UploadedDate.ToString("dd MMM yyyy")
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- ACTIONS -->
+                                <td>
+
+                                    <div class="teacher-table-actions">
+
+                                        <a asp-controller="Teacher"
+                                           asp-action="EditMaterial"
+                                           asp-route-id="@material.MaterialId"
+                                           class="teacher-action-btn teacher-edit-btn">
+
+                                            <i class="bi bi-pencil"></i>
+
+                                            Edit
+
+                                        </a>
+
+
+                                        <form asp-controller="Teacher"
+                                              asp-action="DeleteMaterial"
+                                              method="post"
+                                              style="display:inline;">
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@material.MaterialId" />
+
+                                            <button type="submit"
+                                                    class="teacher-action-btn teacher-delete-btn"
+                                                    onclick="return confirm('Delete this material?');">
+
+                                                <i class="bi bi-trash"></i>
+
+                                                Delete
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            index++;
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+
+    </div>
+
+</div>
